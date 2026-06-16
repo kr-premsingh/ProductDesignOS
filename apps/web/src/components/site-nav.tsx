@@ -1,5 +1,9 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 import { Compass, Sparkles, TrendingUp, Play, Info, User } from "lucide-react";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import AuthModal from "@/components/auth-modal";
 
 const links = [
   { label: "Inspire", href: "/inspire", icon: Compass },
@@ -9,6 +13,16 @@ const links = [
 ];
 
 export function SiteNav() {
+  return (
+    <AuthProvider>
+      <SiteNavInner />
+    </AuthProvider>
+  );
+}
+
+function SiteNavInner() {
+  const { user, logout } = useAuth();
+  const [openAuth, setOpenAuth] = useState(false);
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(7,11,20,0.78)] shadow-[0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-xl">
@@ -28,13 +42,21 @@ export function SiteNav() {
             ))}
           </div>
 
-          <Link
-            href="/profile/nova"
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/12 bg-white/5 px-3 py-2 text-sm text-white shadow-sm transition hover:border-cyan/60 hover:bg-white/10 hover:text-cyan"
-          >
-            <User size={16} />
-            <span className="hidden md:inline">Profile</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                <Link href={`/profile/${user.username}`} className="flex shrink-0 items-center gap-2 rounded-full border border-white/12 bg-white/5 px-3 py-2 text-sm text-white shadow-sm transition hover:border-cyan/60 hover:bg-white/10 hover:text-cyan">
+                  <User size={16} />
+                  <span className="hidden md:inline">Profile</span>
+                </Link>
+                <button onClick={() => logout()} className="rounded-full px-3 py-2 text-sm text-white/70 hover:bg-white/6">Sign out</button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => setOpenAuth(true)} className="rounded-full border border-white/12 bg-white/5 px-3 py-2 text-sm text-white shadow-sm hover:bg-white/10">Sign in</button>
+              </>
+            )}
+          </div>
         </nav>
       </header>
 
@@ -49,14 +71,20 @@ export function SiteNav() {
             <span className="mt-1">{label}</span>
           </Link>
         ))}
-        <Link
-          href="/profile/nova"
-          className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white"
-        >
-          <User size={18} />
-          <span className="mt-1">Profile</span>
-        </Link>
+        {user ? (
+          <Link href={`/profile/${user.username}`} className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white">
+            <User size={18} />
+            <span className="mt-1">Profile</span>
+          </Link>
+        ) : (
+          <button onClick={() => setOpenAuth(true)} className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white">
+            <User size={18} />
+            <span className="mt-1">Sign in</span>
+          </button>
+        )}
       </nav>
+
+      <AuthModal open={openAuth} onClose={() => setOpenAuth(false)} />
     </>
   );
 }

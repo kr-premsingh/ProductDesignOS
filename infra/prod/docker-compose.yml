@@ -45,7 +45,21 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     expose:
       - "4000"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pdos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pdos_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-productdesignos}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
 
 volumes:
   caddy_data:
   caddy_config:
+  postgres_data:

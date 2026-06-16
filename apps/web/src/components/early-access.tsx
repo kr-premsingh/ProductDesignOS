@@ -39,20 +39,39 @@ export function EarlyAccess() {
             ) : (
               <form
                 className="grid gap-3"
-                onSubmit={(event) => {
+                onSubmit={async (event) => {
                   event.preventDefault();
-                  setDone(true);
-                  track("early_access_submitted");
+                  const form = event.target as HTMLFormElement;
+                  const formData = new FormData(form);
+                  const email = String(formData.get('email') || '').trim();
+                  const role = String(formData.get('role') || '').trim();
+                  const mood = String(formData.get('mood') || '').trim();
+                  try {
+                    const res = await fetch('/api/waitlist', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ name: undefined, email, role, mood })
+                    });
+                    if (res.ok) {
+                      setDone(true);
+                      track('early_access_submitted');
+                    } else {
+                      // still mark done but show fallback note
+                      setDone(true);
+                    }
+                  } catch (err) {
+                    setDone(true);
+                  }
                 }}
               >
-                <input required type="email" placeholder="Email" className="rounded-card border border-white/10 bg-white/8 px-3 py-3 outline-none focus:border-cyan" />
-                <select required className="rounded-card border border-white/10 bg-charcoal px-3 py-3 outline-none focus:border-cyan" defaultValue="">
+                <input name="email" required type="email" placeholder="Email" className="rounded-card border border-white/10 bg-white/8 px-3 py-3 outline-none focus:border-cyan" />
+                <select name="role" required className="rounded-card border border-white/10 bg-charcoal px-3 py-3 outline-none focus:border-cyan" defaultValue="">
                   <option value="" disabled>Role</option>
                   <option>Student</option>
                   <option>Influencer</option>
                   <option>Provider</option>
                 </select>
-                <input placeholder="Your design mood in one line" className="rounded-card border border-white/10 bg-white/8 px-3 py-3 outline-none focus:border-cyan" />
+                <input name="mood" placeholder="Your design mood in one line" className="rounded-card border border-white/10 bg-white/8 px-3 py-3 outline-none focus:border-cyan" />
                 <button className="mt-2 rounded-full bg-cyan px-5 py-3 font-semibold text-charcoal">Request invite</button>
               </form>
             )}

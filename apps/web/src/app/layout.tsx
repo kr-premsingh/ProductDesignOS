@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
+import { AuthProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "ProductDesignOS",
@@ -12,7 +13,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-[var(--surface)] text-white">
         <SiteNav />
-        <main className="min-h-screen pb-28">{children}</main>
+        <main className="min-h-screen pb-28">
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+          </main>
       </body>
     </html>
   );
