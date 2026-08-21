@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Compass, Sparkles, TrendingUp, Play, Info, User } from "lucide-react";
+import { Compass, TrendingUp, Play, Info, User } from "lucide-react";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
+import { Logomark } from "@/components/logo";
 
 const links = [
   { label: "Inspire", href: "/inspire", icon: Compass },
@@ -30,7 +31,7 @@ function SiteNavInner() {
         <nav className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 md:flex-nowrap md:justify-between">
           <Link href="/" className="flex min-w-0 flex-1 items-center gap-2 text-sm font-semibold md:flex-none">
             <span className="grid h-10 w-10 place-items-center rounded-2xl border border-cyan/25 bg-cyan/12 text-cyan shadow-glow">
-              <Sparkles size={18} />
+              <Logomark size={18} />
             </span>
             <span className="truncate text-white">ProductDesignOS</span>
           </Link>

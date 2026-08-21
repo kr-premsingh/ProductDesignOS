@@ -86,7 +86,17 @@ export function FeedCard({ tile }: { tile: Tile }) {
   return (
     <article className="group mb-4 break-inside-avoid overflow-hidden rounded-card border border-white/10 bg-white/6">
       <div className="relative">
-        <img src={tile.image} alt="" className="aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+        <img
+          src={tile.image}
+          alt=""
+          className="aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          onError={(event) => {
+            const img = event.currentTarget;
+            if (img.dataset.fallback) return;
+            img.dataset.fallback = "1";
+            img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
+          }}
+        />
         <div className="absolute right-3 top-3 flex gap-2">
           <button aria-label="Like" onClick={toggleLiked} className={`rounded-full p-2 ${liked ? 'bg-magenta text-white' : 'bg-white/6 text-white/80'}`}>
             <Heart size={14} />

@@ -51,11 +51,13 @@ export default async function Home() {
               ProductDesignOS
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.95] md:text-7xl lg:text-8xl">
-              Design that knows your story.
+              A Design OS for Individuality
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-white/72 md:text-xl md:leading-8">
-              Explore thousands of designs — logos, prints, invitations, spaces — remix any of them with AI in
-              seconds, then get the real thing made by a creator who gets it.
+              Most of design today is templates wearing different colors. We think your logo, your outfit, your
+              invitation, your space should sound like you — not a preset. Explore thousands of designs, remix any
+              of them with AI in seconds to make them personal, then get the real thing made by a creator who gets
+              your story.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <EarlyAccess label="Try it free" />
@@ -142,7 +144,7 @@ export default async function Home() {
 
       <section className="bg-[#0B0F14] px-4 py-16">
         <div className="mx-auto grid max-w-7xl gap-6 rounded-panel border border-white/10 bg-white/6 p-8 text-center md:p-14">
-          <h2 className="text-3xl font-black md:text-5xl">Design that knows your story starts here.</h2>
+          <h2 className="text-3xl font-black md:text-5xl">Your story deserves more than a template.</h2>
           <div className="mx-auto flex flex-wrap justify-center gap-3">
             <EarlyAccess />
           </div>
