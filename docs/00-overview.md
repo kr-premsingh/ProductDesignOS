@@ -20,6 +20,7 @@ Read in this order:
 12. [12-landing-page-design.md](12-landing-page-design.md) — landing page section-by-section spec
 13. [13-repo-structure-target.md](13-repo-structure-target.md) — target modular-monolith folder layout & migration plan
 14. [14-tech-stack.md](14-tech-stack.md) — TypeScript frontend, Rust backend, WASM, Docker-first: concrete tech per service
+15. [15-deployment-free-options.md](15-deployment-free-options.md) — free hosting paths (managed cloud vs. home server) and setup steps
 
 ## Ground rules from the brainstorm
 

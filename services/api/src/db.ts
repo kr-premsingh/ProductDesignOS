@@ -7,13 +7,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../infra/prod/.env') });
 
-const client = new Client({
-  host: process.env.POSTGRES_HOST || '127.0.0.1',
-  port: process.env.POSTGRES_PORT ? Number(process.env.POSTGRES_PORT) : 5432,
-  user: process.env.POSTGRES_USER || 'pdos',
-  password: process.env.POSTGRES_PASSWORD || 'pdos_pass',
-  database: process.env.POSTGRES_DB || 'productdesignos'
-});
+const client = process.env.DATABASE_URL
+  ? new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL.includes('sslmode=disable') ? undefined : { rejectUnauthorized: false }
+    })
+  : new Client({
+      host: process.env.POSTGRES_HOST || '127.0.0.1',
+      port: process.env.POSTGRES_PORT ? Number(process.env.POSTGRES_PORT) : 5432,
+      user: process.env.POSTGRES_USER || 'pdos',
+      password: process.env.POSTGRES_PASSWORD || 'pdos_pass',
+      database: process.env.POSTGRES_DB || 'productdesignos'
+    });
 
 let connected = false;
 export async function initDb() {
