@@ -11,14 +11,17 @@ FROM deps AS build
 COPY . .
 ARG NEXT_PUBLIC_API_URL=http://localhost:4000
 ARG NEXT_PUBLIC_CORE_API_URL=http://localhost:4100
+ARG API_URL=http://localhost:4000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_CORE_API_URL=$NEXT_PUBLIC_CORE_API_URL
+ENV API_URL=$API_URL
 RUN npm run build --workspace apps/web
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app /app
+COPY --from=build /app/apps/web/next.config.mjs apps/web/next.config.mjs
 COPY --from=build /app/apps/web/.next apps/web/.next
 COPY --from=build /app/apps/web/public apps/web/public
 WORKDIR /app/apps/web
