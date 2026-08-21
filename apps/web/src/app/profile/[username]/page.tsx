@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { inspireTiles } from "@/lib/mock-data";
 import { useAuth } from '@/lib/auth';

@@ -4,5 +4,18 @@ dist
 coverage
 .env
 .env.local
+.env.*.local
 .turbo
 *.log
+
+# Rust
+target
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

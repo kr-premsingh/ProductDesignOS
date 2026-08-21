@@ -18,9 +18,5 @@
   },
   "engines": {
     "node": ">=20"
-  },
-  "dependencies": {
-    "@swc/core": "^1.15.41",
-    "next": "^16.2.9"
   }
 }

@@ -1,4 +1,26 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: pdos
+      POSTGRES_PASSWORD: pdos_pass
+      POSTGRES_DB: productdesignos
+    ports:
+      - "5432:5432"
+    volumes:
+      - pdos_postgres_data:/var/lib/postgresql/data
+      - ../services/api/db/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pdos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
   api:
     build:
       context: ..
@@ -7,8 +29,26 @@ services:
       PORT: 4000
       JWT_SECRET: dev-secret
       AI_PROVIDER: stub
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: pdos
+      POSTGRES_PASSWORD: pdos_pass
+      POSTGRES_DB: productdesignos
     ports:
       - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  core-api:
+    build:
+      context: ../services/core-api
+      dockerfile: Dockerfile
+    environment:
+      PORT: 4100
+    ports:
+      - "4100:4100"
+
   web:
     build:
       context: ..
@@ -19,3 +59,6 @@ services:
       - "3000:3000"
     depends_on:
       - api
+
+volumes:
+  pdos_postgres_data:

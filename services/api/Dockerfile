@@ -15,12 +15,9 @@ RUN npm run build --workspace services/api
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY package*.json ./
-COPY services/api/package.json services/api/package.json
-COPY services/ai/package.json services/ai/package.json
+COPY --from=deps /app /app
 COPY services/api/src services/api/src
 COPY services/ai/src services/ai/src
-COPY --from=deps /app/node_modules node_modules
 WORKDIR /app/services/api
 EXPOSE 4000
 CMD ["npm", "run", "start"]

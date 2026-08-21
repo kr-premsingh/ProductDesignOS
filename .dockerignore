@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/target
+**/.turbo
+qdk-learning
+docs
+infra/prod/.env
+*.log
+.DS_Store

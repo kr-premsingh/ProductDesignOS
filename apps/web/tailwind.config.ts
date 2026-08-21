@@ -10,7 +10,16 @@ const config: Config = {
         cyan: "#00E5FF",
         magenta: "#FF4DA6",
         lime: "#B6F36A",
-        muted: "#9AA3B2"
+        muted: "#9AA3B2",
+        paper: "#F5F1EA",
+        ink: "#14110D",
+        accent: {
+          branding: "#00E5FF",
+          apparel: "#FF4DA6",
+          invitations: "#E8B23A",
+          decor: "#7FA37A",
+          tattoo: "#B6F36A"
+        }
       },
       borderRadius: {
         card: "8px",

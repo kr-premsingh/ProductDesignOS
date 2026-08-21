@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight, Check, X } from "lucide-react";
 import { track } from "@/lib/analytics";
 
-export function EarlyAccess() {
+export function EarlyAccess({ label = "Join Early Access", defaultRole }: { label?: string; defaultRole?: string } = {}) {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -14,10 +14,10 @@ export function EarlyAccess() {
         className="inline-flex items-center gap-2 rounded-full bg-glass px-5 py-3 text-sm font-semibold text-charcoal transition hover:bg-cyan"
         onClick={() => {
           setOpen(true);
-          track("early_access_opened");
+          track("early_access_opened", { defaultRole });
         }}
       >
-        Join Early Access <ArrowRight size={16} />
+        {label} <ArrowRight size={16} />
       </button>
       {open ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/72 px-4">
@@ -65,7 +65,7 @@ export function EarlyAccess() {
                 }}
               >
                 <input name="email" required type="email" placeholder="Email" className="rounded-card border border-white/10 bg-white/8 px-3 py-3 outline-none focus:border-cyan" />
-                <select name="role" required className="rounded-card border border-white/10 bg-charcoal px-3 py-3 outline-none focus:border-cyan" defaultValue="">
+                <select name="role" required className="rounded-card border border-white/10 bg-charcoal px-3 py-3 outline-none focus:border-cyan" defaultValue={defaultRole ?? ""}>
                   <option value="" disabled>Role</option>
                   <option>Student</option>
                   <option>Influencer</option>

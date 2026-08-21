@@ -9,6 +9,7 @@ const links = [
   { label: "Inspire", href: "/inspire", icon: Compass },
   { label: "Trends", href: "/design-trends", icon: TrendingUp },
   { label: "Demo", href: "/app/demo/logo", icon: Play },
+  { label: "For Creators", href: "/#for-creators", icon: Info },
   { label: "About", href: "/about", icon: Info }
 ];
 

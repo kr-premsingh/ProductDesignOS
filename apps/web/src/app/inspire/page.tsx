@@ -1,11 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Wand2, BriefcaseBusiness } from "lucide-react";
 import { categories, inspireTiles } from "@/lib/mock-data";
 
 export default function InspirePage() {
-  const [filter, setFilter] = useState("All");
+  return (
+    <Suspense fallback={null}>
+      <InspirePageInner />
+    </Suspense>
+  );
+}
+
+function InspirePageInner() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category");
+  const [filter, setFilter] = useState(initialCategory && categories.includes(initialCategory) ? initialCategory : "All");
   const tiles = useMemo(() => filter === "All" ? inspireTiles : inspireTiles.filter((tile) => tile.category === filter), [filter]);
 
   return (
