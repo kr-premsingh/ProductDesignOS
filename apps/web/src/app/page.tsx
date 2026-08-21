@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowUpRight, Sparkles, Wand2, Compass, ShoppingBag } from "lucide-react";
 import { EarlyAccess } from "@/components/early-access";
 import { FeedCard } from "@/components/feed-card";
-import { categories, inspireTiles } from "@/lib/mock-data";
+import { categories as fallbackCategories, inspireTiles as fallbackTiles } from "@/lib/mock-data";
+import { fetchCategories, fetchDesigns, toTile } from "@/lib/catalog";
 
 const loopSteps = [
   { icon: Compass, title: "Explore", copy: "Browse real and AI-made designs across categories." },
@@ -11,9 +12,25 @@ const loopSteps = [
   { icon: ShoppingBag, title: "Get it made", copy: "Request the real thing from a verified creator or provider, digital or physical." }
 ];
 
-const previewTiles = inspireTiles.slice(0, 8);
+async function getLandingContent() {
+  const coreApiUrl = process.env.CORE_API_URL || "http://localhost:4100";
+  try {
+    const apiCategories = await fetchCategories(coreApiUrl);
+    const apiDesigns = await fetchDesigns(coreApiUrl, { limit: 8 });
+    if (apiCategories.length && apiDesigns.length) {
+      return {
+        categoryNames: apiCategories.map((c) => c.name),
+        previewTiles: apiDesigns.map((d) => toTile(d, apiCategories))
+      };
+    }
+  } catch {
+    // core-api unavailable, fall through to seeded mock data
+  }
+  return { categoryNames: fallbackCategories, previewTiles: fallbackTiles.slice(0, 8) };
+}
 
-export default function Home() {
+export default async function Home() {
+  const { categoryNames, previewTiles } = await getLandingContent();
   return (
     <main className="overflow-hidden">
       <section className="relative min-h-[calc(100vh-96px)] overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(232,178,58,0.08),_transparent_32%)] px-4 py-8 md:min-h-[calc(100vh-64px)] md:py-10">
@@ -54,7 +71,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <p className="text-xs font-semibold uppercase text-muted">Already on the feed</p>
           <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {categoryNames.map((category) => (
               <Link
                 key={category}
                 href={`/inspire?category=${encodeURIComponent(category)}`}

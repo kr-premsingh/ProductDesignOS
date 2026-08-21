@@ -57,12 +57,17 @@ services:
     build:
       context: ..
       dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000
+        NEXT_PUBLIC_CORE_API_URL: http://localhost:4100
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:4000
+      CORE_API_URL: http://core-api:4100
     ports:
       - "3000:3000"
     depends_on:
       - api
+      - core-api
 
 volumes:
   pdos_postgres_data:
