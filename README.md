@@ -2,6 +2,8 @@
 
 ProductDesignOS is an MVP for an individuality-first design operating system: a premium landing experience, curated Inspire feed, AI logo demo with deterministic stubs, public profiles, design trends, and provider onboarding.
 
+> **Planning v2:** The full product vision, architecture, and roadmap (discovery + AI remix + portfolio + marketplace, across multiple verticals) is being redesigned. See [docs/00-overview.md](docs/00-overview.md) before making significant product/architecture changes. The code below is the original MVP scaffold and is treated as reference only.
+
 ## Stack
 
 - Monorepo with npm workspaces
