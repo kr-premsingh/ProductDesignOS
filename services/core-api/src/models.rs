@@ -32,5 +32,34 @@ pub struct CreateDesignPayload {
     pub prompt: Option<String>,
     pub visibility: Option<String>,
     pub tags: Option<Vec<String>>,
-    pub owner_id: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct SignupPayload {
+    pub username: String,
+    pub email: String,
+    pub password: String,
+    /// Optional additional role to grant at signup (e.g. "creator", "provider").
+    /// Every account always gets "explorer"; this is additive, not a fixed account type (docs/04).
+    pub role: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct LoginPayload {
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Serialize)]
+pub struct PublicUser {
+    pub id: String,
+    pub username: String,
+    pub email: String,
+    pub roles: Vec<String>,
+}
+
+#[derive(Serialize)]
+pub struct AuthResponse {
+    pub token: String,
+    pub user: PublicUser,
 }

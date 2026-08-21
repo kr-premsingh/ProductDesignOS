@@ -3,18 +3,19 @@ use axum::{
     Json,
 };
 use serde::Deserialize;
-use sqlx::PgPool;
 
 use crate::{
     error::AppError,
     models::{Category, CreateDesignPayload, Design},
+    routes::auth::CurrentUser,
+    state::AppState,
 };
 
-pub async fn list_categories(State(pool): State<PgPool>) -> Result<Json<Vec<Category>>, AppError> {
+pub async fn list_categories(State(state): State<AppState>) -> Result<Json<Vec<Category>>, AppError> {
     let categories = sqlx::query_as::<_, Category>(
         "SELECT id, slug, name, accent_color, allowed_fulfillment_types FROM categories ORDER BY name",
     )
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await?;
     Ok(Json(categories))
 }
@@ -27,7 +28,7 @@ pub struct ListDesignsQuery {
 }
 
 pub async fn list_designs(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Query(q): Query<ListDesignsQuery>,
 ) -> Result<Json<Vec<Design>>, AppError> {
     let limit = q.limit.unwrap_or(24).min(100);
@@ -43,7 +44,7 @@ pub async fn list_designs(
         .bind(slug)
         .bind(limit)
         .bind(offset)
-        .fetch_all(&pool)
+        .fetch_all(&state.pool)
         .await?
     } else {
         sqlx::query_as::<_, Design>(
@@ -52,7 +53,7 @@ pub async fn list_designs(
         )
         .bind(limit)
         .bind(offset)
-        .fetch_all(&pool)
+        .fetch_all(&state.pool)
         .await?
     };
 
@@ -60,7 +61,8 @@ pub async fn list_designs(
 }
 
 pub async fn create_design(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
+    current_user: CurrentUser,
     Json(payload): Json<CreateDesignPayload>,
 ) -> Result<Json<Design>, AppError> {
     let id = uuid::Uuid::new_v4().to_string();
@@ -68,7 +70,7 @@ pub async fn create_design(
     let category_id: Option<String> = if let Some(slug) = &payload.category_slug {
         sqlx::query_scalar::<_, String>("SELECT id FROM categories WHERE slug = $1")
             .bind(slug)
-            .fetch_optional(&pool)
+            .fetch_optional(&state.pool)
             .await?
     } else {
         None
@@ -83,14 +85,14 @@ pub async fn create_design(
          RETURNING id, owner_id, category_id, source_type, title, asset_url, prompt, visibility, tags, created_at",
     )
     .bind(&id)
-    .bind(&payload.owner_id)
+    .bind(&current_user.id)
     .bind(&category_id)
     .bind(&payload.title)
     .bind(&payload.asset_url)
     .bind(&payload.prompt)
     .bind(&visibility)
     .bind(&tags)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await?;
 
     Ok(Json(design))
