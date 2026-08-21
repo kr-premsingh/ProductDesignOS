@@ -46,8 +46,12 @@ services:
       dockerfile: Dockerfile
     environment:
       PORT: 4100
+      DATABASE_URL: postgres://pdos:pdos_pass@postgres:5432/productdesignos
     ports:
       - "4100:4100"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   web:
     build:
