@@ -16,6 +16,9 @@ Read in this order:
 8. [08-credits-and-monetization.md](08-credits-and-monetization.md) — credits now, currency later
 9. [09-mvp-roadmap.md](09-mvp-roadmap.md) — phased plan for a 2-5 person team, ~2-3 months
 10. [10-risks-and-open-questions.md](10-risks-and-open-questions.md) — what could break this, what's still undecided
+11. [11-brand-and-visual-identity.md](11-brand-and-visual-identity.md) — visual direction options, recommended pick
+12. [12-landing-page-design.md](12-landing-page-design.md) — landing page section-by-section spec
+13. [13-repo-structure-target.md](13-repo-structure-target.md) — target modular-monolith folder layout & migration plan
 
 ## Ground rules from the brainstorm
 
