@@ -13,7 +13,7 @@ Confirms and elaborates the direction: **TypeScript on the frontend, Rust on the
 | Use case | Where it's used | Why WASM |
 |---|---|---|
 | Palette extraction / background-removal preview | Design Studio, before upload | Instant feedback, avoids an API round-trip and AI credit spend for a cheap operation |
-| Vector logo render/recolor engine | Design Studio (branding vertical) | Live recolor/edit of SVG paths needs to feel instant while iterating on 3 variants |
+| Vector/logo render and recolor engine | Design Studio (brand assets, posters, product graphics) | Live recolor/edit of SVG paths needs to feel instant while iterating on 3 variants |
 | Print-ready export (SVG→CMYK-safe PNG/PDF, apparel mockup compositing) | "Make it real" export step | Canvas-heavy compositing done locally, keeps the API stateless and cheap |
 | Moodboard/collage auto-layout (bin-packing) | Boards/portfolio export | Layout math is CPU-bound and has no reason to hit a server |
 | Client-side perceptual hash / near-duplicate check | Upload flow | Cheap pre-filter before server-side moderation (doc 07) runs |

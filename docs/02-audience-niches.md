@@ -1,38 +1,55 @@
-# Audience & Verticals
+# Audience & Design Categories
 
-## Who we serve (roles a person/org can hold — see doc 04 for the extensible model)
+## Who we serve
 
-- **Explorer/Consumer** — browses, saves, remixes with AI, may request a custom order for personal use (a room, an outfit, a logo, an invitation).
-- **Creator** — individual designer/artist who shares work, builds a portfolio/following, sells digital deliverables (files, templates, custom digital art) and/or takes commissions.
-- **Provider (physical)** — small business/maker who fulfills physical goods (print, apparel, furniture, decor, custom merchandise), often via POD/dropship or local production.
-- **Agency/Studio** — team account, multiple seats, manages a roster of client work, higher-volume needs (bulk AI credits, white-label options later).
+- **Explorer/Individual** — browses, saves, remixes with AI, exports personal designs, creates posters/wall art/gifts, and may later order physical products.
+- **Creator** — designer/artist who shares work, builds a portfolio/following, sells digital deliverables, contributes remixable inspiration, and may accept commissions later.
+- **Brand/Small Business** — needs fast, reusable creative assets: ads, banners, thumbnails, posters, launch graphics, campaign variations, merch concepts, and brand kits.
+- **Provider (physical, later)** — small business/maker/POD partner who fulfills physical goods such as T-shirts, hoodies, caps, mugs, gifts, stickers, wall prints, or decor items after demand is proven.
+- **Agency/Studio** — team account with shared credits, client boards, brand kits, bulk generation/export, and provider sourcing later.
 - **Admin/Moderator** — internal, trust & safety, curation.
 
-Any account can hold multiple roles at once (a Creator can also be a Provider; an Explorer can become a Creator without a new account).
+Any account can hold multiple roles at once (a Creator can also become a Provider; an Individual can publish designs; a Brand can have team members).
 
-## Vertical selection criteria
+## Product category principle
 
-1. **Demand** — already searched/pinned/shopped for heavily (Pinterest/Etsy/Instagram signal).
-2. **Fulfillment feasibility** — deliverable digitally, via POD/dropship, or by a small curated pool of local providers. No custom logistics needed from us.
-3. **AI generation readiness** — current open-weight image/text models (Flux, SDXL, ControlNet, Llama/Qwen class LLMs) already produce convincing results for this vertical.
-4. **Time-to-wow** — a first-time user gets a compelling remix result in under ~15 seconds with zero setup.
+We do **not** start with a narrow logo product, and we do **not** need a full provider marketplace on day one. We start with common, high-demand design formats that are immediately useful as digital outputs or mockups.
 
-## Shortlist for MVP (recommend 2-3 of these to start; final pick is a business call, not purely technical)
+The feed should feel visual and addictive like an inspiration board, but every item is a structured **Design**: category, format, prompt, editable fields, style tags, export options, and future commerce intent.
 
-| Vertical | Demand signal | Supply model | Fulfillment complexity | AI readiness | Notes |
-|---|---|---|---|---|---|
-| **Branding / logo & graphic design** | Very high (every small business needs one) | Individual creators + agencies | Low (digital delivery) | High (existing AI logo demo in repo already proves this) | Best "day 1" vertical — reuses existing scaffold, zero physical fulfillment risk |
-| **Fashion / apparel & accessories** | Very high (Pinterest/TikTok driven) | POD/dropship (Printful/Printify-style) + independent designers | Low-medium (POD partner handles print/ship) | High (SDXL/Flux strong on apparel mockups/patterns) | Great "make it real" moment: remix a print → order a shirt |
-| **Home / interior decor** | Very high (Pinterest's biggest category) | Local providers (furniture makers, painters, decor sellers) + digital mood-board/rendering | Medium (local fulfillment, higher price point, longer sales cycle) | High for mood boards/renders, weaker for precise room-accurate renders | Strong content/portfolio fit, best held for phase 2 unless a strong local-provider pool exists |
-| **Events / weddings / invitations** | High, seasonal, high emotional spend | Individual creators (invitation/stationery design) + local event providers | Low for digital (invites), medium for physical (favors/decor) | High (great for stylized, personalized digital art) | High willingness-to-pay, good early revenue-intent signal even without payments |
-| **Tattoo / body art design** | High on social, niche but passionate | Individual tattoo artists | Low (digital design only; artist executes in person) | High | Good portfolio/showcase fit, smaller TAM, good phase-2 candidate |
-| **Packaging / product mockups (for small brands)** | Medium-high, B2B-ish | Agencies + individual designers | Low (digital) | High | Good agency/business wedge, less "consumer viral" |
+## Launch clusters
 
-**Recommendation:** launch with **Branding/Logo** (reuses existing work, proves AI+marketplace loop with zero physical risk) + **Fashion/Apparel** (POD fulfillment = no inventory risk, highly shareable/visual, strong "make it real" CTA) as the two flagship verticals, with **Events/Invitations** as a fast-follow (same digital-delivery simplicity, adds a high-intent, high-emotion use case). Home decor and tattoo are strong phase-2/phase-3 additions once local-provider tooling and richer image-to-real-world fidelity are in place.
+| Cluster | Example formats | Primary user | MVP output | Revenue signal |
+|---|---|---|---|---|
+| **Digital Creatives** | Ads, banners, social posts, flyers, posters, YouTube thumbnails, LinkedIn covers | Brands, creators, individuals | High-res export, editable variants, brand-sized assets | Credit spend, export clicks, repeat generation |
+| **Brand Assets** | Logos, campaign graphics, business cards, mini brand kits, product mockups | Small businesses, founders, agencies | Logo/asset variants, brand kit exports, campaign packs | Paid credits, future agency/team tier |
+| **Spaces & Wall Art** | Room posters, wall prints, decor concepts, moodboard art | Individuals, creators, decor sellers | Poster/wall-art exports and room mockups | Export/mockup demand, later print-provider demand |
+| **Personalized Products** | T-shirts, hoodies, caps, mugs, gifts, stickers, tote bags | Individuals, brands, creators | Product mockups and print-ready artwork | Saved product intent, later POD/provider orders |
 
-## Jobs to be done (per segment)
+## Selection criteria
 
-- *"Help me look professional fast without hiring anyone."* (solo founder → logo/branding)
-- *"Show me something that looks like me, not a template."* (consumer → apparel, decor, invitations)
+1. **Demand** — already searched, pinned, posted, sold, or commissioned heavily.
+2. **Immediate usefulness** — a generated result can be exported, shared, posted, pitched, or mocked up without physical fulfillment.
+3. **AI readiness** — current image/layout models can produce good first-pass designs and variations.
+4. **Format clarity** — the product knows the canvas: YouTube thumbnail, Instagram ad, hoodie back print, A4 poster, wall print, etc.
+5. **Commerce runway** — repeated remix/export behavior tells us which provider categories to onboard later.
+
+## Recommendation
+
+Launch the MVP around **Digital Creatives + Personalized Product Mockups**, with **Brand Assets** included as a strong sub-cluster because the current repo already has logo-generation scaffolding.
+
+This gives us breadth without chaos:
+
+- brands can create ads, banners, thumbnails, posters, and merch concepts;
+- individuals can create posters, gifts, wall art, apparel graphics, and social designs;
+- providers are not required for the first useful product experience;
+- physical fulfillment can be added later where remix/mockup demand is strongest.
+
+## Jobs to be done
+
+- *"Help me create usable campaign assets fast without hiring a designer for every variation."* (brand/small business)
+- *"Give me something that looks like my taste, not a template."* (individual)
+- *"Help me create thumbnails, posters, banners, and product graphics that stand out."* (creator)
+- *"Let me test merch or gift ideas before I pay to manufacture them."* (individual/brand)
 - *"Give me a way to be discovered and paid for my taste/skill."* (creator/provider)
-- *"Give my team a faster, cheaper design pipeline and a place to source vetted freelancers/vendors."* (agency/business)
+- *"Give my team a faster design pipeline and a place to source creators/vendors later."* (agency/business)

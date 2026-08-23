@@ -1,8 +1,8 @@
 # Credits & Monetization
 
-## MVP stance: credits, not currency — but designed to become currency
+## MVP stance: credits first, provider payouts later
 
-No real money moves in the pilot. Every "spend" (AI generation, and optionally marketplace actions) draws from a **credit balance**, recorded as an append-only ledger (`CreditLedgerEntry`, doc 06) so the system already looks and behaves like a payments ledger. The only thing that changes when we flip on real money is (a) how credits are acquired (purchase vs. free grants) and (b) adding a payout/payment adapter — no schema or flow rewrite.
+Every "spend" (AI generation, remix, high-res export, mockup generation, and optionally marketplace actions later) draws from a **credit balance**, recorded as an append-only ledger (`CreditLedgerEntry`, doc 06) so the system already looks and behaves like a payments ledger. We can run the earliest pilot with free/admin/referral credits, then introduce purchasable credits before provider payouts are ready.
 
 ## Acquiring credits (pilot)
 
@@ -13,13 +13,16 @@ No real money moves in the pilot. Every "spend" (AI generation, and optionally m
 
 ## Spending credits (pilot)
 
-- AI generation actions (per doc 07's cost table).
-- Optional: allow credits to cover marketplace orders during pilot as **platform-funded promo credit** (clearly distinguished in the ledger with reason `promo_grant`) so we can test the marketplace transaction flow end-to-end without real payment rails yet — but keep this ledger-tagged separately from "earned" credits so it's easy to strip out later.
+- AI generation and remix actions (per doc 07's cost table).
+- High-res exports and print-ready downloads.
+- Product mockups (T-shirt, hoodie, cap, mug, gift, poster/wall art).
+- Optional: allow credits to cover marketplace orders in a later closed pilot as **platform-funded promo credit** (clearly distinguished in the ledger with reason `promo_grant`) so we can test the transaction flow end-to-end without provider payouts yet.
 
-## Provider/creator side in the pilot
+## Creator/provider side in the pilot
 
-- Free storefront/portfolio and marketplace listing — no platform fee collected yet (fee = 0%, but the field exists and is logged so switching it on later is a config change, not a rebuild).
-- Providers still go through the full `Order` state machine (doc 04) so operational kinks (quoting, messaging, fulfillment tracking) are validated before money is involved.
+- Free creator profile/portfolio and remixable design uploads.
+- Physical providers are onboarded only after we see enough product-intent signals by category/product/geography.
+- When provider pilots begin, providers still go through the full `Order` state machine (doc 04) so operational kinks (quoting, messaging, fulfillment tracking) are validated before broad rollout.
 
 ## The ledger → currency bridge (build this now, flip it later)
 
@@ -29,17 +32,18 @@ No real money moves in the pilot. Every "spend" (AI generation, and optionally m
 
 ## Future monetization mechanics (post-pilot, in likely rollout order)
 
-1. **Commission/take-rate** on marketplace transactions (like Etsy) — most aligned with the marketplace model, turn on once order volume and trust are proven.
-2. **Creator/provider subscriptions** — storefront features, analytics, bulk AI credit bundles, reduced take-rate at higher tiers.
-3. **Consumer subscription** — unlimited/faster AI generations, higher-res exports, priority queue.
-4. **Promoted listings / boosted pins** — ad-like placement in the feed, once feed traffic is meaningful.
-5. **Lead-gen fee** (Houzz-style) for providers who prefer paying per qualified quote request rather than commission.
-6. **Agency/enterprise plans** — seats, shared credit pools, (later) white-label.
+1. **Paid credit packs** — generations, remixes, high-res exports, print-ready downloads, product mockups.
+2. **Brand/agency plans** — seats, shared credit pools, brand kits, asset libraries, bulk exports, client boards.
+3. **Creator subscriptions** — portfolio/storefront features, analytics, bulk AI credit bundles, remix licensing controls.
+4. **Commission/take-rate** on marketplace transactions — turn on once provider fulfillment and trust are proven.
+5. **Promoted listings / boosted designs** — ad-like placement in the feed, once feed traffic is meaningful.
+6. **Lead-gen fee** for providers who prefer paying per qualified request rather than commission.
 
 ## Validation gates before turning on real monetization
 
 - Activation rate (of signups, % who complete a remix).
-- Remix→save and remix→"make it real" request conversion.
-- Provider fulfillment completion rate and review scores.
+- Remix→save, remix→export, and remix→mockup conversion.
+- Product-intent signals by product type (T-shirt, hoodie, cap, mug, wall poster, gift, etc.).
+- Provider fulfillment completion rate and review scores once provider pilots begin.
 - Repeat usage (WAU/MAU, week-2 retention).
 - Explicit would-pay signal (pricing survey, waitlist-for-paid-features, or a "reserve at future price" soft-commit flow) before building full billing.

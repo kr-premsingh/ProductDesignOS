@@ -2,12 +2,12 @@
 
 This `docs/` set is the working plan for the platform, written before any new code. It supersedes the scope in the root `PROMPT_Claude.md` / `PROMPT_Codex.md` (kept as historical reference; the current `apps/web` + `services/*` code is a throwaway MVP scaffold, not a constraint).
 
-**One-line vision:** A platform where anyone can discover design inspiration (UGC + AI), remix it into something personal with integrated AI, showcase it like a portfolio, and — when they want the real thing — get it made or sold by a real creator/provider (digital or physical).
+**One-line vision:** A remix-first design platform where anyone can discover editable inspiration, personalize it with AI, export useful digital assets, showcase their work, and later turn proven physical-product demand into real provider fulfillment.
 
 Read in this order:
 
 1. [01-vision-and-strategy.md](01-vision-and-strategy.md) — why, wedge, competitive framing, flywheel
-2. [02-audience-niches.md](02-audience-niches.md) — who we serve, which verticals first
+2. [02-audience-niches.md](02-audience-niches.md) — who we serve, which design clusters/formats first
 3. [03-experience-and-flows.md](03-experience-and-flows.md) — every screen/flow end to end
 4. [04-roles-and-marketplace.md](04-roles-and-marketplace.md) — extensible roles + marketplace model
 5. [05-architecture.md](05-architecture.md) — system design, service boundaries
@@ -24,8 +24,8 @@ Read in this order:
 
 ## Ground rules from the brainstorm
 
-- No single fixed niche — support many verticals, but **launch with 2-3** that are high-demand and operationally feasible (see doc 02).
+- No single fixed niche — support many common design formats, but organize the MVP around a few **intent clusters** that users already understand: digital creatives, brand assets, spaces/wall art, and physical-product mockups (see doc 02).
 - Supply side (creators/providers) must be **role-based and extensible**, not hardcoded account types (see doc 04).
-- **No real money in MVP** — a credits system that is designed so it can be swapped for real currency later without a data-model rewrite (see doc 08).
+- **No provider payouts in MVP** — start with credits for AI generation, exports, and mockups; design the ledger so purchasable credits and provider payouts can be enabled later without a data-model rewrite (see doc 08).
 - AI: **hybrid** — hosted APIs on open-weight models first, self-host on rented GPUs once volume justifies it (see doc 07).
 - Team: small (2-5 people), 2-3 month runway to pilot.

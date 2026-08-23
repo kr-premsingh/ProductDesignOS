@@ -25,7 +25,8 @@ interface AIProvider {
 | text2image | Generate from a written brief | Medium |
 | image2image / remix | Remix an existing pin | Medium |
 | inpaint/edit region | Fix or change part of a design | Medium |
-| upscale/hi-res export | Final "make it real" export | Higher |
+| upscale/hi-res export | Final usable/exportable asset | Higher |
+| product mockup | Preview a design on a T-shirt, hoodie, cap, mug, gift, or wall poster | Medium-higher |
 
 ## Cost controls (so credits ≈ real cost, ready for real pricing later)
 

@@ -43,7 +43,7 @@ This lets us onboard broadly and fast while keeping physical-goods risk gated be
 
 ## The universal marketplace entity: `Offering`
 
-Instead of separate models per vertical, every sellable thing is an `Offering` with a `fulfillmentType` and a vertical-specific attribute payload validated against a JSON Schema registered per `Category` (see doc 06). This is what lets us add a new vertical (e.g., "furniture") as configuration, not code.
+Instead of separate models per product type, every sellable thing is an `Offering` with a `fulfillmentType` and a category/format-specific attribute payload validated against a JSON Schema registered per `Category` and `DesignFormat` (see doc 06). This is what lets us add a new format (e.g., "mug wrap" or "YouTube thumbnail") as configuration, not core code.
 
 ```
 Offering
@@ -56,7 +56,7 @@ Offering
   status: draft | active | paused
 ```
 
-## Order/transaction flow (shape shared by all verticals)
+## Order/transaction flow (shape shared by all categories/formats)
 
 ```mermaid
 stateDiagram-v2
