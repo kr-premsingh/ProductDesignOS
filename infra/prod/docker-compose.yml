@@ -5,6 +5,9 @@ services:
     depends_on:
       - web
       - api
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     environment:
       DOMAIN: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
