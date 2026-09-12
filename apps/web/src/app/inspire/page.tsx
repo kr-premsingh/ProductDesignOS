@@ -23,7 +23,9 @@ function InspirePageInner() {
 
   useEffect(() => {
     let active = true;
-    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:4100";
+    // relative /core-api hits the Next.js rewrite -> core-api (works same-origin in prod);
+    // NEXT_PUBLIC_CORE_API_URL overrides it for split-host setups (e.g. Vercel + Render)
+    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
     (async () => {
       try {
         const [apiCategories, apiDesigns] = await Promise.all([

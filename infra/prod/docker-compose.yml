@@ -25,14 +25,19 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        API_URL: http://api:4000
+        CORE_API_URL: http://core-api:4100
     restart: unless-stopped
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      API_URL: http://api:4000
+      CORE_API_URL: http://core-api:4100
     expose:
       - "3000"
     depends_on:
       - api
+      - core-api
 
   api:
     build:
@@ -49,7 +54,24 @@ services:
     expose:
       - "4000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+  core-api:
+    build:
+      context: ../../services/core-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 4100
+      DATABASE_URL: postgres://${POSTGRES_USER:-pdos}:${POSTGRES_PASSWORD:-pdos_pass}@postgres:5432/${POSTGRES_DB:-productdesignos}
+      JWT_SECRET: ${JWT_SECRET}
+    expose:
+      - "4100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:15-alpine
     restart: unless-stopped
@@ -59,6 +81,12 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-productdesignos}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ../../services/api/db/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pdos}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - default
 

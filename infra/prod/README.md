@@ -4,6 +4,7 @@ This production profile runs ProductDesignOS behind Caddy on a Linux home server
 
 - `https://$DOMAIN/` to the Next.js web app
 - `https://$DOMAIN/api/*` to the Fastify API
+- `https://$DOMAIN/core-api/*` to the Rust core API (proxied via the Next.js rewrite, same-origin from the browser)
 - `https://$DOMAIN/health` to the API health check
 
 ## Server Prerequisites
@@ -31,6 +32,22 @@ Edit `.env` with your real domain, email, and secrets, then run:
 ```bash
 docker compose --env-file .env up -d --build
 ```
+
+## Upgrading from the pre-core-api version
+
+Postgres init scripts only run on a **fresh** volume, so the newer migrations don't apply automatically on an existing server. Apply them once manually (with the stack running):
+
+```bash
+cd /opt/productdesignos
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml up -d postgres
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/002_catalog.sql
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/003_auth.sql
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml up -d --build
+```
+
+(skip the `psql` steps if the database is already migrated, or set `POSTGRES_USER`/`POSTGRES_DB` inline from your `.env` if your shell doesn't expand them).
 
 ## GitHub Actions Secrets
 
