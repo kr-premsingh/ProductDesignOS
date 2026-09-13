@@ -114,7 +114,14 @@ export function FeedCard({ tile }: { tile: Tile }) {
         </div>
         <p className="mt-2 text-sm text-muted">{tile.remixPrompt}</p>
         <div className="mt-4 flex gap-2">
-          <Link href={`/app/demo/logo`} className="inline-flex items-center gap-2 rounded-full bg-glass px-3 py-2 text-xs font-semibold text-charcoal">
+          <Link
+            href={
+              user
+                ? `/studio?source=${encodeURIComponent(tile.id)}&prompt=${encodeURIComponent(tile.remixPrompt || "")}`
+                : `/studio`
+            }
+            className="inline-flex items-center gap-2 rounded-full bg-glass px-3 py-2 text-xs font-semibold text-charcoal"
+          >
             <Wand2 size={14} /> Remix
           </Link>
           <button className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs text-muted">

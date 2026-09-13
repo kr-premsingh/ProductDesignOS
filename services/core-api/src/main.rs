@@ -1,3 +1,4 @@
+mod ai;
 mod db;
 mod error;
 mod models;
@@ -9,9 +10,11 @@ use axum::{
     Router,
 };
 use std::net::SocketAddr;
+use std::sync::Arc;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 
+use ai::StubProvider;
 use state::AppState;
 
 #[tokio::main]
@@ -21,7 +24,7 @@ async fn main() {
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "dev-secret".to_string());
     let pool = db::create_pool(&database_url).await;
-    let state = AppState { pool, jwt_secret };
+    let state = AppState { pool, jwt_secret, ai_provider: Arc::new(StubProvider) };
 
     let app = Router::new()
         .route("/health", get(routes::health::health))
@@ -33,6 +36,8 @@ async fn main() {
             "/designs",
             get(routes::catalog::list_designs).post(routes::catalog::create_design),
         )
+        .route("/ai/jobs", post(routes::ai::create_job))
+        .route("/ai/jobs/:id", get(routes::ai::get_job))
         .with_state(state)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());

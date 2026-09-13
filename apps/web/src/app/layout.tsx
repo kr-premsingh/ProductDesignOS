@@ -12,12 +12,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-[var(--surface)] text-white">
-        <SiteNav />
-        <main className="min-h-screen pb-28">
-          <AuthProvider>
+        <AuthProvider>
+          <SiteNav />
+          <main className="min-h-screen pb-28">
             {children}
-          </AuthProvider>
           </main>
+        </AuthProvider>
       </body>
     </html>
   );

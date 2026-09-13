@@ -7,6 +7,7 @@ pub enum AppError {
     Unauthorized,
     BadRequest(String),
     Conflict(String),
+    NotFound,
 }
 
 impl IntoResponse for AppError {
@@ -19,6 +20,7 @@ impl IntoResponse for AppError {
             AppError::Unauthorized => (StatusCode::UNAUTHORIZED, "unauthorized".to_string()),
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
             AppError::Conflict(msg) => (StatusCode::CONFLICT, msg),
+            AppError::NotFound => (StatusCode::NOT_FOUND, "not_found".to_string()),
         };
         (status, Json(json!({ "error": message }))).into_response()
     }

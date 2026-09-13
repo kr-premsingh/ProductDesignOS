@@ -8,8 +8,9 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::PgPool;
 
 use crate::{
@@ -19,6 +20,7 @@ use crate::{
 };
 
 const ALLOWED_ADDITIONAL_ROLES: [&str; 2] = ["creator", "provider"];
+const SIGNUP_BONUS_CREDITS: i32 = 10;
 
 #[derive(Serialize, Deserialize)]
 struct Claims {
@@ -35,6 +37,30 @@ pub struct CurrentUser {
     pub roles: Vec<String>,
 }
 
+// Two JWT shapes exist during the Node -> Rust migration:
+//   Node API:  { sub, username, role: "student" }        (role = singular string)
+//   core-api:  { sub, username, roles: ["explorer", ..] } (roles = array)
+// Accept both so a token from either service authenticates everywhere (docs/14).
+fn decode_claims(token: &str, jwt_secret: &str) -> Result<Claims, AppError> {
+    let data = decode::<Value>(
+        token,
+        &DecodingKey::from_secret(jwt_secret.as_bytes()),
+        &Validation::new(Algorithm::HS256),
+    )
+    .map_err(|_| AppError::Unauthorized)?;
+    let v = data.claims;
+    let sub = v.get("sub").and_then(|x| x.as_str()).ok_or(AppError::Unauthorized)?.to_string();
+    let username = v.get("username").and_then(|x| x.as_str()).unwrap_or_default().to_string();
+    let roles = if let Some(arr) = v.get("roles").and_then(|x| x.as_array()) {
+        arr.iter().filter_map(|r| r.as_str().map(String::from)).collect()
+    } else if let Some(role) = v.get("role").and_then(|x| x.as_str()) {
+        vec!["explorer".to_string(), role.to_string()]
+    } else {
+        vec!["explorer".to_string()]
+    };
+    Ok(Claims { sub, username, roles, exp: 0 })
+}
+
 #[async_trait]
 impl FromRequestParts<AppState> for CurrentUser {
     type Rejection = AppError;
@@ -46,13 +72,7 @@ impl FromRequestParts<AppState> for CurrentUser {
             .and_then(|v| v.to_str().ok())
             .ok_or(AppError::Unauthorized)?;
         let token = header.strip_prefix("Bearer ").ok_or(AppError::Unauthorized)?;
-        let claims = decode::<Claims>(
-            token,
-            &DecodingKey::from_secret(state.jwt_secret.as_bytes()),
-            &Validation::default(),
-        )
-        .map_err(|_| AppError::Unauthorized)?
-        .claims;
+        let claims = decode_claims(token, &state.jwt_secret)?;
         Ok(CurrentUser { id: claims.sub, username: claims.username, roles: claims.roles })
     }
 }
@@ -128,6 +148,15 @@ pub async fn signup(
             .execute(&state.pool)
             .await?;
     }
+
+    sqlx::query(
+        "INSERT INTO credit_ledger_entries (id, user_id, delta, balance_after, reason) VALUES ($1, $2, $3, $3, 'signup_bonus')",
+    )
+    .bind(uuid::Uuid::new_v4().to_string())
+    .bind(&id)
+    .bind(SIGNUP_BONUS_CREDITS)
+    .execute(&state.pool)
+    .await?;
 
     let token = issue_token(&state.jwt_secret, &id, &payload.username, &roles)?;
     Ok(Json(AuthResponse {

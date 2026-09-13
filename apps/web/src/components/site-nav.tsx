@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Compass, TrendingUp, Play, Info, User } from "lucide-react";
-import { AuthProvider, useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
 
@@ -15,11 +15,7 @@ const links = [
 ];
 
 export function SiteNav() {
-  return (
-    <AuthProvider>
-      <SiteNavInner />
-    </AuthProvider>
-  );
+  return <SiteNavInner />;
 }
 
 function SiteNavInner() {
