@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Compass, TrendingUp, Play, Info, User, ShoppingBag } from "lucide-react";
+import { Compass, TrendingUp, Play, Info, User, ShoppingBag, House, WandSparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
@@ -13,6 +13,13 @@ const links = [
   { label: "Marketplace", href: "/marketplace", icon: ShoppingBag },
   { label: "For Creators", href: "/#for-creators", icon: Info },
   { label: "About", href: "/about", icon: Info }
+];
+
+const mobileLinks = [
+  { label: "Home", href: "/", icon: House },
+  { label: "Inspire", href: "/inspire", icon: Compass },
+  { label: "Studio", href: "/studio", icon: WandSparkles },
+  { label: "Market", href: "/marketplace", icon: ShoppingBag }
 ];
 
 export function SiteNav() {
@@ -59,26 +66,27 @@ function SiteNavInner() {
         </nav>
       </header>
 
-      <nav className="fixed bottom-4 left-1/2 z-50 flex w-[calc(100%-2rem)] -translate-x-1/2 items-center justify-between gap-1 rounded-3xl border border-white/10 bg-[rgba(10,14,20,0.88)] p-2 text-white/80 shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-2xl md:hidden">
-        {links.map(({ label, href, icon: Icon }) => (
+      <nav className="fixed bottom-3 left-1/2 z-50 flex h-16 w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 items-stretch justify-between gap-1 rounded-[22px] border border-white/12 bg-[rgba(10,14,20,0.92)] px-2 py-1.5 text-white/70 shadow-[0_18px_55px_rgba(0,0,0,0.38)] backdrop-blur-2xl md:hidden">
+        {mobileLinks.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
             href={href}
-            className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white"
+            aria-label={label}
+            className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-white/10 hover:text-white"
           >
-            <Icon size={18} />
+            <Icon size={18} strokeWidth={1.8} />
             <span className="mt-1">{label}</span>
           </Link>
         ))}
         {user ? (
-          <Link href={`/profile/${user.username}`} className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white">
-            <User size={18} />
-            <span className="mt-1">Profile</span>
+          <Link href={`/profile/${user.username}`} aria-label="Account" className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-white/10 hover:text-white">
+            <User size={18} strokeWidth={1.8} />
+            <span className="mt-1">Account</span>
           </Link>
         ) : (
-          <button onClick={() => setOpenAuth(true)} className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition hover:bg-white/10 hover:text-white">
-            <User size={18} />
-            <span className="mt-1">Sign in</span>
+          <button onClick={() => setOpenAuth(true)} aria-label="Account" className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-white/10 hover:text-white">
+            <User size={18} strokeWidth={1.8} />
+            <span className="mt-1">Account</span>
           </button>
         )}
       </nav>
