@@ -50,6 +50,26 @@ textarea {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
 }
 
+@keyframes hero-pan {
+  from {
+    transform: scale(1.035) translate3d(-0.5%, 0, 0);
+  }
+  to {
+    transform: scale(1.035) translate3d(1.5%, 0, 0);
+  }
+}
+
+.hero-image {
+  animation: hero-pan 22s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image {
+    animation: none;
+  }
+}
+
 .tile-grid {
   columns: 1;
   column-gap: 1rem;

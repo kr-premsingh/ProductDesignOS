@@ -37,7 +37,7 @@ export default async function Home() {
         <img
           src="/hero-image.png"
           alt="A creative workspace at night with design materials and a city view"
-          className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.78] contrast-[1.05] saturate-[0.9] opacity-80"
+          className="hero-image absolute inset-0 h-full w-full object-cover object-[58%_center] brightness-[0.78] contrast-[1.05] saturate-[0.9] opacity-80 md:object-[60%_center]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,10,15,0.94)_0%,rgba(8,12,18,0.78)_42%,rgba(8,12,18,0.28)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(0,229,255,0.18),transparent_30%),linear-gradient(180deg,transparent_62%,rgba(6,8,13,0.92)_100%)]" />
@@ -51,10 +51,10 @@ export default async function Home() {
               <span className="h-2 w-2 rounded-full bg-lime" />
               ProductDesignOS
             </div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.95] md:text-7xl lg:text-8xl">
+            <h1 className="max-w-4xl text-5xl font-black leading-[1.08] md:text-7xl lg:text-8xl">
               A Design OS for Individuality
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-white/72 md:text-xl md:leading-8">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 md:text-xl md:leading-9">
               Most of design today is templates wearing different colors. We think your logo, your outfit, your
               invitation, your space should sound like you — not a preset. Explore thousands of designs, remix any
               of them with AI in seconds to make them personal, then get the real thing made by a creator who gets
