@@ -44,6 +44,12 @@ docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec 
   psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/002_catalog.sql
 docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
   psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/003_auth.sql
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/004_ai_jobs.sql
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/005_social.sql
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" < services/api/db/migrations/006_marketplace.sql
 docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml up -d --build
 ```
 

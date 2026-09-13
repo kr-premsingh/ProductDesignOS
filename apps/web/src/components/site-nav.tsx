@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Compass, TrendingUp, Play, Info, User } from "lucide-react";
+import { Compass, TrendingUp, Play, Info, User, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
@@ -10,6 +10,7 @@ const links = [
   { label: "Inspire", href: "/inspire", icon: Compass },
   { label: "Trends", href: "/design-trends", icon: TrendingUp },
   { label: "Demo", href: "/app/demo/logo", icon: Play },
+  { label: "Marketplace", href: "/marketplace", icon: ShoppingBag },
   { label: "For Creators", href: "/#for-creators", icon: Info },
   { label: "About", href: "/about", icon: Info }
 ];
