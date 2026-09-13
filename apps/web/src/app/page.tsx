@@ -35,9 +35,9 @@ export default async function Home() {
     <main className="overflow-hidden">
       <section className="relative min-h-[calc(100vh-96px)] overflow-hidden bg-[#111318] px-4 py-8 md:min-h-[calc(100vh-64px)] md:py-10">
         <img
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2400&q=88"
-          alt="A bright creative studio with desks and design materials"
-          className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.72] contrast-[1.05] saturate-[0.82] opacity-70"
+          src="/hero-image.png"
+          alt="A creative workspace at night with design materials and a city view"
+          className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.78] contrast-[1.05] saturate-[0.9] opacity-80"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,10,15,0.94)_0%,rgba(8,12,18,0.78)_42%,rgba(8,12,18,0.28)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(0,229,255,0.18),transparent_30%),linear-gradient(180deg,transparent_62%,rgba(6,8,13,0.92)_100%)]" />
