@@ -105,7 +105,7 @@ pub async fn create_offering(
     current_user: CurrentUser,
     Json(payload): Json<CreateOfferingPayload>,
 ) -> Result<Json<Offering>, AppError> {
-    require_role(&current_user, "provider")?;
+    require_provider(&state, &current_user).await?;
     if payload.title.trim().is_empty() {
         return Err(AppError::BadRequest("title is required".to_string()));
     }
@@ -177,6 +177,15 @@ pub async fn update_order(
     Ok(Json(order))
 }
 
-fn require_role(user: &CurrentUser, role: &str) -> Result<(), AppError> {
-    if user.roles.iter().any(|r| r == role || r == "admin") { Ok(()) } else { Err(AppError::Unauthorized) }
+async fn require_provider(state: &AppState, user: &CurrentUser) -> Result<(), AppError> {
+    if user.roles.iter().any(|r| r == "provider" || r == "admin") {
+        return Ok(());
+    }
+    let status: Option<String> = sqlx::query_scalar("SELECT provider_status FROM users WHERE id = $1")
+        .bind(&user.id).fetch_optional(&state.pool).await?;
+    if status.as_deref() == Some("pending") || status.as_deref() == Some("approved") {
+        Ok(())
+    } else {
+        Err(AppError::Unauthorized)
+    }
 }

@@ -5,16 +5,19 @@ import { ShoppingBag } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 type Offering = { id: string; owner_id: string; title: string; description?: string; fulfillment_type: string; pricing_type: string; price_credits?: number; lead_time_days?: number };
+type Order = { id: string; offering_id: string; brief: string; status: string; quoted_credits?: number };
 
 export default function MarketplacePage() {
   const { token } = useAuth();
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
     fetch(`${coreApiUrl}/offerings`).then((res) => res.json()).then(setOfferings).catch(() => setOfferings([]));
-  }, []);
+    if (token) fetch(`${coreApiUrl}/orders`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.ok ? res.json() : []).then(setOrders).catch(() => setOrders([]));
+  }, [token]);
 
   async function requestQuote(offeringId: string) {
     if (!token) { setMessage("Sign in to request a quote."); return; }
@@ -44,6 +47,14 @@ export default function MarketplacePage() {
         ))}
       </div>
       {!offerings.length ? <p className="mt-10 text-sm text-muted">Creator offerings will appear here as providers join the pilot.</p> : null}
+      {orders.length ? (
+        <section className="mt-14">
+          <h2 className="text-2xl font-black">Your requests</h2>
+          <div className="mt-4 grid gap-3">
+            {orders.map((order) => <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-white/10 bg-white/6 p-4 text-sm"><span>{order.brief}</span><span className="rounded-full bg-white/10 px-3 py-1 text-xs uppercase text-cyan">{order.status}{order.quoted_credits ? ` · ${order.quoted_credits} credits` : ""}</span></div>)}
+          </div>
+        </section>
+      ) : null}
       {message ? <p className="mt-6 text-sm text-lime">{message}</p> : null}
     </main>
   );
