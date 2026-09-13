@@ -38,6 +38,10 @@ async fn main() {
         )
         .route("/ai/jobs", post(routes::ai::create_job))
         .route("/ai/jobs/:id", get(routes::ai::get_job))
+        .route("/designs/:id/like", post(routes::social::toggle_like))
+        .route("/designs/:id/save", post(routes::social::toggle_save))
+        .route("/designs/:id/visibility", axum::routing::patch(routes::social::set_design_visibility))
+        .route("/users/:username/follow", post(routes::social::toggle_follow))
         .with_state(state)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());

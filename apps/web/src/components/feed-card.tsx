@@ -59,7 +59,8 @@ export function FeedCard({ tile }: { tile: Tile }) {
     const next = !liked;
     setLiked(next);
     if (user?.id && token) {
-      await postAction(`/api/items/${tile.id}/like`, token);
+      const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+      await postAction(`${coreApiUrl}/designs/${tile.id}/like`, token);
     } else {
       try {
         const likedSet = new Set(JSON.parse(localStorage.getItem('liked') || '[]'));
@@ -73,7 +74,8 @@ export function FeedCard({ tile }: { tile: Tile }) {
     const next = !saved;
     setSaved(next);
     if (user?.id && token) {
-      await postAction(`/api/items/${tile.id}/save`, token);
+      const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+      await postAction(`${coreApiUrl}/designs/${tile.id}/save`, token);
     } else {
       try {
         const savedSet = new Set(JSON.parse(localStorage.getItem('saved') || '[]'));

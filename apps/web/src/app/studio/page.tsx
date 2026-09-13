@@ -140,6 +140,7 @@ function StudioPageInner() {
               )}
               <h2 className="mt-4 font-semibold">{variant.title}</h2>
               <p className="mt-2 text-sm text-muted">{variant.rationale}</p>
+              <PublishButton designId={variant.design_id} token={token} />
             </article>
           ))}
           {!variants.length && status !== "running" ? (
@@ -156,4 +157,34 @@ function StudioPageInner() {
 function decodeSvgDataUri(uri: string): string {
   const prefix = "data:image/svg+xml;utf8,";
   return uri.startsWith(prefix) ? decodeURIComponent(uri.slice(prefix.length)) : "";
+}
+
+function PublishButton({ designId, token }: { designId: string; token: string | null }) {
+  const [state, setState] = useState<"idle" | "publishing" | "published" | "error">("idle");
+  if (state === "published") {
+    return <p className="mt-4 text-xs text-lime">Published to the public feed.</p>;
+  }
+  return (
+    <button
+      onClick={async () => {
+        if (!token) return;
+        setState("publishing");
+        try {
+          const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+          const res = await fetch(`${coreApiUrl}/designs/${designId}/visibility`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ visibility: "public" })
+          });
+          setState(res.ok ? "published" : "error");
+        } catch {
+          setState("error");
+        }
+      }}
+      disabled={!token || state === "publishing"}
+      className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs text-muted transition hover:border-cyan hover:text-cyan disabled:opacity-50"
+    >
+      {state === "publishing" ? "Publishing..." : state === "error" ? "Failed - retry" : "Publish"}
+    </button>
+  );
 }
