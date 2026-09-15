@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { MessageCircle, Send, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 type Offering = { id: string; owner_id: string; title: string; description?: string; fulfillment_type: string; pricing_type: string; price_credits?: number; lead_time_days?: number };
 type Order = { id: string; offering_id: string; brief: string; status: string; quoted_credits?: number };
+type OrderMessage = { id: string; sender_id: string; body: string; created_at: string };
 
 export default function MarketplacePage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -51,11 +52,44 @@ export default function MarketplacePage() {
         <section className="mt-14">
           <h2 className="text-2xl font-black">Your requests</h2>
           <div className="mt-4 grid gap-3">
-            {orders.map((order) => <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-white/10 bg-white/6 p-4 text-sm"><span>{order.brief}</span><span className="rounded-full bg-white/10 px-3 py-1 text-xs uppercase text-cyan">{order.status}{order.quoted_credits ? ` · ${order.quoted_credits} credits` : ""}</span></div>)}
+            {orders.map((order) => <OrderThread key={order.id} order={order} token={token} userId={user?.id} />)}
           </div>
         </section>
       ) : null}
       {message ? <p className="mt-6 text-sm text-lime">{message}</p> : null}
     </main>
   );
+}
+
+function OrderThread({ order, token, userId }: { order: Order; token: string | null; userId?: string }) {
+  const [messages, setMessages] = useState<OrderMessage[]>([]);
+  const [draft, setDraft] = useState("");
+  const [open, setOpen] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (!open || !token) return;
+    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+    fetch(`${coreApiUrl}/orders/${order.id}/messages`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.ok ? res.json() : [])
+      .then(setMessages)
+      .catch(() => setMessages([]));
+  }, [open, order.id, token]);
+
+  async function sendMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!draft.trim() || !token) return;
+    setSending(true);
+    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+    try {
+      const res = await fetch(`${coreApiUrl}/orders/${order.id}/messages`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ body: draft.trim() }) });
+      if (res.ok) {
+        const message: OrderMessage = await res.json();
+        setMessages((current) => [...current, message]);
+        setDraft("");
+      }
+    } finally { setSending(false); }
+  }
+
+  return <article className="rounded-card border border-white/10 bg-white/6 p-4 text-sm"><div className="flex flex-wrap items-center justify-between gap-3"><p className="max-w-2xl text-white/85">{order.brief}</p><span className="rounded-full bg-white/10 px-3 py-1 text-xs uppercase text-cyan">{order.status}{order.quoted_credits ? ` · ${order.quoted_credits} credits` : ""}</span></div><button onClick={() => setOpen((value) => !value)} className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-cyan hover:text-magenta"><MessageCircle size={15}/>{open ? "Hide conversation" : "Open conversation"}</button>{open ? <div className="mt-4 border-t border-white/10 pt-4"><div className="max-h-56 space-y-2 overflow-y-auto">{messages.length ? messages.map((message) => <div key={message.id} className={`max-w-[85%] rounded-card px-3 py-2 ${message.sender_id === userId ? "ml-auto bg-cyan text-charcoal" : "bg-white/10 text-white/85"}`}>{message.body}</div>) : <p className="text-xs text-muted">Start the conversation with a clear next step.</p>}</div><form onSubmit={sendMessage} className="mt-3 flex gap-2"><input value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={2000} placeholder="Write a message" className="min-w-0 flex-1 rounded-full border border-white/15 bg-charcoal/50 px-4 py-2 text-sm outline-none focus:border-cyan"/><button disabled={sending || !draft.trim()} className="grid h-9 w-9 place-items-center rounded-full bg-cyan text-charcoal disabled:opacity-50" aria-label="Send message"><Send size={15}/></button></form></div> : null}</article>;
 }

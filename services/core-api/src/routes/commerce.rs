@@ -59,6 +59,20 @@ pub struct UpdateOrderPayload {
     pub quoted_credits: Option<i32>,
 }
 
+#[derive(Serialize, FromRow)]
+pub struct OrderMessage {
+    pub id: String,
+    pub order_id: String,
+    pub sender_id: String,
+    pub body: String,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Deserialize)]
+pub struct CreateMessagePayload {
+    pub body: String,
+}
+
 pub async fn list_offerings(
     State(state): State<AppState>,
     Query(query): Query<ListOfferingsQuery>,
@@ -175,6 +189,56 @@ pub async fn update_order(
     ).bind(&order_id).bind(&current_user.id).bind(payload.status).bind(payload.quoted_credits)
     .fetch_optional(&state.pool).await?.ok_or(AppError::NotFound)?;
     Ok(Json(order))
+}
+
+pub async fn list_messages(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Path(order_id): Path<String>,
+) -> Result<Json<Vec<OrderMessage>>, AppError> {
+    require_order_participant(&state, &order_id, &current_user.id).await?;
+    let messages = sqlx::query_as::<_, OrderMessage>(
+        "SELECT id, order_id, sender_id, body, created_at FROM order_messages WHERE order_id = $1 ORDER BY created_at ASC",
+    )
+    .bind(&order_id)
+    .fetch_all(&state.pool)
+    .await?;
+    Ok(Json(messages))
+}
+
+pub async fn create_message(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Path(order_id): Path<String>,
+    Json(payload): Json<CreateMessagePayload>,
+) -> Result<Json<OrderMessage>, AppError> {
+    let body = payload.body.trim();
+    if body.is_empty() || body.len() > 2_000 {
+        return Err(AppError::BadRequest("message must be between 1 and 2000 characters".to_string()));
+    }
+    require_order_participant(&state, &order_id, &current_user.id).await?;
+    let message = sqlx::query_as::<_, OrderMessage>(
+        "INSERT INTO order_messages (id, order_id, sender_id, body) VALUES ($1, $2, $3, $4)
+         RETURNING id, order_id, sender_id, body, created_at",
+    )
+    .bind(uuid::Uuid::new_v4().to_string())
+    .bind(&order_id)
+    .bind(&current_user.id)
+    .bind(body)
+    .fetch_one(&state.pool)
+    .await?;
+    Ok(Json(message))
+}
+
+async fn require_order_participant(state: &AppState, order_id: &str, user_id: &str) -> Result<(), AppError> {
+    let exists: Option<String> = sqlx::query_scalar(
+        "SELECT id FROM orders WHERE id = $1 AND (buyer_id = $2 OR provider_id = $2)",
+    )
+    .bind(order_id)
+    .bind(user_id)
+    .fetch_optional(&state.pool)
+    .await?;
+    if exists.is_some() { Ok(()) } else { Err(AppError::NotFound) }
 }
 
 async fn require_provider(state: &AppState, user: &CurrentUser) -> Result<(), AppError> {

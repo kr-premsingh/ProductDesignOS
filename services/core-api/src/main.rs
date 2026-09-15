@@ -50,6 +50,7 @@ async fn main() {
         .route("/offerings/:id/orders", post(routes::commerce::create_order))
         .route("/orders", get(routes::commerce::list_my_orders))
         .route("/orders/:id", axum::routing::patch(routes::commerce::update_order))
+        .route("/orders/:id/messages", get(routes::commerce::list_messages).post(routes::commerce::create_message))
         .route("/designs/:id/like", post(routes::social::toggle_like))
         .route("/designs/:id/save", post(routes::social::toggle_save))
         .route("/designs/:id/visibility", axum::routing::patch(routes::social::set_design_visibility))
