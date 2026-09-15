@@ -36,7 +36,7 @@ export default function DooniqHome() {
       <div className="flex flex-col gap-4 border-b border-black/[0.08] pb-5 md:flex-row md:items-center md:justify-between">
         <div><h1 className="text-2xl font-black tracking-normal sm:text-3xl">For your next thing.</h1><p className="mt-1 text-sm text-black/50">Save what moves you. Make it yours.</p></div>
         <div className="flex w-full items-center gap-2 rounded-full border border-black/[0.1] bg-white px-4 py-2.5 shadow-sm md:w-[360px]">
-          <Search size={17} className="shrink-0 text-muted" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search ideas, styles, formats" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted" />
+          <Search size={17} className="shrink-0 text-black/45" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search ideas, styles, formats" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-black/40" />
         </div>
       </div>
 
@@ -52,9 +52,9 @@ export default function DooniqHome() {
         <Link href="/marketplace" className="group flex min-h-40 flex-col justify-between rounded-panel border border-black/[0.1] bg-white p-6 shadow-sm transition hover:border-magenta/60"><Sparkles className="text-magenta" size={23} /><div><p className="text-xl font-black">Make it real.</p><p className="mt-1 text-sm text-black/50">Work with creators and providers ready to build it.</p></div></Link>
       </div>
 
-      <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold">Discover</h2><span className="text-xs text-muted">{visibleTiles.length} designs</span></div>
+      <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold">Discover</h2><span className="text-xs text-black/45">{visibleTiles.length} designs</span></div>
       <div className="tile-grid">{visibleTiles.map((tile) => <FeedCard key={tile.id} tile={tile} />)}</div>
-      {!visibleTiles.length ? <p className="py-16 text-center text-sm text-muted">Nothing matched that. Try a different search or category.</p> : null}
+      {!visibleTiles.length ? <p className="py-16 text-center text-sm text-black/50">Nothing matched that. Try a different search or category.</p> : null}
     </main>
   );
 }

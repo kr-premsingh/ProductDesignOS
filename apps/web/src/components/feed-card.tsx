@@ -76,12 +76,12 @@ export function FeedCard({ tile }: { tile: Tile }) {
   }
 
   return (
-    <article className="group mb-4 break-inside-avoid overflow-hidden rounded-card border border-white/10 bg-white/6">
+    <article className="group mb-5 break-inside-avoid overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(0,0,0,0.08),0_18px_38px_rgba(0,0,0,0.1)]">
       <div className="relative">
         <img
           src={tile.image}
           alt=""
-          className="aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.025]"
           onError={(event) => {
             const img = event.currentTarget;
             if (img.dataset.fallback) return;
@@ -89,22 +89,22 @@ export function FeedCard({ tile }: { tile: Tile }) {
             img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
           }}
         />
-        <div className="absolute right-3 top-3 flex gap-2">
-          <button aria-label="Like" onClick={toggleLiked} className={`rounded-full p-2 ${liked ? 'bg-magenta text-white' : 'bg-white/6 text-white/80'}`}>
+        <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+          <button aria-label="Like" onClick={toggleLiked} className={`grid h-9 w-9 place-items-center rounded-full shadow-sm backdrop-blur ${liked ? 'bg-[#ff4da6] text-white' : 'bg-white/90 text-[#1d1d1f]'}`}>
             <Heart size={14} />
           </button>
-          <button aria-label="Save" onClick={toggleSaved} className={`rounded-full p-2 ${saved ? 'bg-cyan text-charcoal' : 'bg-white/6 text-white/80'}`}>
+          <button aria-label="Save" onClick={toggleSaved} className={`grid h-9 w-9 place-items-center rounded-full shadow-sm backdrop-blur ${saved ? 'bg-cyan text-charcoal' : 'bg-white/90 text-[#1d1d1f]'}`}>
             <Bookmark size={14} />
           </button>
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 text-[#1d1d1f]">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-semibold">{tile.title}</h2>
-          <span className="rounded-full bg-white/10 px-2 py-1 text-xs text-muted">{tile.category}</span>
+          <span className="rounded-full bg-black/[0.05] px-2.5 py-1 text-[11px] font-medium text-black/55">{tile.category}</span>
         </div>
-        <p className="mt-2 text-sm text-muted">{tile.remixPrompt}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-5 text-black/55">{tile.remixPrompt || "A direction ready to make your own."}</p>
         <div className="mt-4 flex gap-2">
           <Link
             href={
@@ -112,11 +112,11 @@ export function FeedCard({ tile }: { tile: Tile }) {
                 ? `/studio?source=${encodeURIComponent(tile.id)}&prompt=${encodeURIComponent(tile.remixPrompt || "")}`
                 : `/studio`
             }
-            className="inline-flex items-center gap-2 rounded-full bg-glass px-3 py-2 text-xs font-semibold text-charcoal"
+            className="inline-flex items-center gap-2 rounded-full bg-[#1d1d1f] px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-cyan hover:text-charcoal"
           >
             <Wand2 size={14} /> Remix
           </Link>
-          <button className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs text-muted">
+          <button className="inline-flex items-center gap-2 rounded-full border border-black/[0.12] px-3.5 py-2 text-xs font-semibold text-black/60 transition hover:border-black/30 hover:text-black">
             <BriefcaseBusiness size={14} /> Hire
           </button>
         </div>
