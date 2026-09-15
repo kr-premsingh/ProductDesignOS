@@ -44,16 +44,16 @@ export default function DooniqHome() {
         {["All", ...categories].map((category) => <button key={category} onClick={() => setFilter(category)} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${filter === category ? "border-cyan bg-cyan text-charcoal" : "border-black/[0.1] bg-white text-black/70 hover:border-black/25"}`}>{category}</button>)}
       </div>
 
-      <div className="mb-6 grid gap-3 md:grid-cols-[1.35fr_1fr]">
-        <Link href="/studio" className="group relative min-h-40 overflow-hidden rounded-panel border border-cyan/35 bg-[linear-gradient(118deg,#e8fbfd,#f6f9ff_54%,#fff3f8)] p-6 transition hover:border-cyan/80">
-          <div className="absolute right-[-2rem] top-[-3rem] h-40 w-40 rounded-full border border-cyan/30" />
-          <WandSparkles className="relative text-cyan" size={24} /><p className="relative mt-7 text-xl font-black">Create from a feeling.</p><p className="relative mt-1 text-sm text-black/60">Open Studio and turn a rough idea into three distinct directions.</p>
+      <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-[1.35fr_1fr]">
+        <Link href="/studio" className="group relative min-h-28 overflow-hidden rounded-panel border border-cyan/35 bg-[linear-gradient(118deg,#e8fbfd,#f6f9ff_54%,#fff3f8)] p-4 transition hover:border-cyan/80 md:min-h-40 md:p-6">
+          <div className="absolute right-[-2rem] top-[-3rem] hidden h-40 w-40 rounded-full border border-cyan/30 md:block" />
+          <WandSparkles className="relative text-cyan" size={20} /><p className="relative mt-4 text-sm font-black sm:text-base md:mt-7 md:text-xl">Create from a feeling.</p><p className="relative mt-1 hidden text-sm text-black/60 md:block">Open Studio and turn a rough idea into three distinct directions.</p>
         </Link>
-        <Link href="/marketplace" className="group flex min-h-40 flex-col justify-between rounded-panel border border-black/[0.1] bg-white p-6 shadow-sm transition hover:border-magenta/60"><Sparkles className="text-magenta" size={23} /><div><p className="text-xl font-black">Make it real.</p><p className="mt-1 text-sm text-black/50">Work with creators and providers ready to build it.</p></div></Link>
+        <Link href="/marketplace" className="group flex min-h-28 flex-col justify-between rounded-panel border border-black/[0.1] bg-white p-4 shadow-sm transition hover:border-magenta/60 md:min-h-40 md:p-6"><Sparkles className="text-magenta" size={20} /><div><p className="text-sm font-black sm:text-base md:text-xl">Make it real.</p><p className="mt-1 hidden text-sm text-black/50 md:block">Work with creators and providers ready to build it.</p></div></Link>
       </div>
 
       <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold">Discover</h2><span className="text-xs text-black/45">{visibleTiles.length} designs</span></div>
-      <div className="tile-grid">{visibleTiles.map((tile) => <FeedCard key={tile.id} tile={tile} />)}</div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">{visibleTiles.map((tile) => <FeedCard key={tile.id} tile={tile} />)}</div>
       {!visibleTiles.length ? <p className="py-16 text-center text-sm text-black/50">Nothing matched that. Try a different search or category.</p> : null}
     </main>
   );
