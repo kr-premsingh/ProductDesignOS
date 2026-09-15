@@ -40,19 +40,9 @@ export function FeedCard({ tile }: { tile: Tile }) {
         setSaved(savedSet.includes(tile.id));
       } catch (err) {}
 
-      if (user?.id && token) {
-        try {
-          const res = await fetch('/api/me/saved', { headers: { authorization: `Bearer ${token}` } });
-          if (res.ok) {
-            const data = await res.json();
-            const ids = (data.items || []).map((i: any) => i.id);
-            if (mounted) setSaved(ids.includes(tile.id));
-          }
-        } catch (err) {}
-      }
     }
     init();
-    return () => { mounted = false; };
+    return undefined;
   }, [tile.id, user, token]);
 
   async function toggleLiked() {

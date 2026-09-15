@@ -47,7 +47,7 @@ export function EarlyAccess({ label = "Join Early Access", defaultRole }: { labe
                   const role = String(formData.get('role') || '').trim();
                   const mood = String(formData.get('mood') || '').trim();
                   try {
-                    const res = await fetch('/api/waitlist', {
+                    const res = await fetch('/core-api/waitlist', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ name: undefined, email, role, mood })

@@ -23,9 +23,8 @@ wait_for() {
 }
 
 "${compose[@]}" up --build -d
-wait_for "api" "http://localhost:4000/health"
 wait_for "core-api" "http://localhost:4100/health"
 wait_for "web" "http://localhost:3000/"
 
 "${compose[@]}" ps
-echo "Full local stack passed: web, api, core-api, postgres, and redis."
+echo "Full local stack passed: web, core-api, postgres, and redis."

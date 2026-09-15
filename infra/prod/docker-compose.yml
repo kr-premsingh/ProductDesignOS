@@ -4,7 +4,6 @@ services:
     restart: unless-stopped
     depends_on:
       - web
-      - api
     dns:
       - 1.1.1.1
       - 8.8.8.8
@@ -25,38 +24,15 @@ services:
       context: ../..
       dockerfile: apps/web/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-        API_URL: http://api:4000
         CORE_API_URL: http://core-api:4100
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      API_URL: http://api:4000
       CORE_API_URL: http://core-api:4100
     expose:
       - "3000"
     depends_on:
-      - api
       - core-api
-
-  api:
-    build:
-      context: ../..
-      dockerfile: services/api/Dockerfile
-    restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      PORT: 4000
-      JWT_SECRET: ${JWT_SECRET}
-      AI_PROVIDER: ${AI_PROVIDER:-stub}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-    expose:
-      - "4000"
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   core-api:
     build:

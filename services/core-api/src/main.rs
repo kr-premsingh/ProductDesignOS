@@ -37,6 +37,7 @@ async fn main() {
         .route("/auth/signup", post(routes::auth::signup))
         .route("/auth/login", post(routes::auth::login))
         .route("/auth/me", get(routes::auth::me))
+        .route("/waitlist", post(routes::public::join_waitlist))
         .route("/categories", get(routes::catalog::list_categories))
         .route(
             "/designs",

@@ -8,7 +8,6 @@ docker compose -f infra/docker-compose.yml up --build -d
 echo ""
 echo "Dooniq is up:"
 echo "  Product:  http://localhost:3000"
-echo "  API:      http://localhost:4000"
 echo "  Core API: http://localhost:4100/health"
 echo "  Postgres: localhost:5432 (pdos/pdos_pass/productdesignos)"
 echo "  Redis:    localhost:6379"

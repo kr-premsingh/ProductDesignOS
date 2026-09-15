@@ -5,12 +5,8 @@
 {$COMPANY_DOMAIN}, {$PRODUCT_DOMAIN} {
 	encode zstd gzip
 
-	handle /api/* {
-		reverse_proxy api:4000
-	}
-
 	handle /health {
-		reverse_proxy api:4000
+		reverse_proxy core-api:4100
 	}
 
 	handle {

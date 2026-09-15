@@ -21,25 +21,6 @@ services:
     ports:
       - "6379:6379"
 
-  api:
-    build:
-      context: ..
-      dockerfile: services/api/Dockerfile
-    environment:
-      PORT: 4000
-      JWT_SECRET: dev-secret
-      AI_PROVIDER: stub
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: pdos
-      POSTGRES_PASSWORD: pdos_pass
-      POSTGRES_DB: productdesignos
-    ports:
-      - "4000:4000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   core-api:
     build:
       context: ../services/core-api
@@ -60,17 +41,12 @@ services:
       context: ..
       dockerfile: apps/web/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:4000
         NEXT_PUBLIC_CORE_API_URL: http://localhost:4100
-        API_URL: http://api:4000
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:4000
-      API_URL: http://api:4000
       CORE_API_URL: http://core-api:4100
     ports:
       - "3000:3000"
     depends_on:
-      - api
       - core-api
 
 volumes:

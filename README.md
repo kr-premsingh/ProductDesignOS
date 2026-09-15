@@ -10,8 +10,7 @@ ProductDesignOS is an MVP for an individuality-first design operating system: a 
 - `apps/web`: Dooniq product frontend (Next.js, TypeScript, Tailwind CSS). It currently host-routes the ProductDesignOS company site at `productdesignos.com`; it becomes `apps/company` only when the company site needs an independent release cycle.
 - `apps/company` (planned): ProductDesignOS company frontend for brand, team, partnerships, and deals.
 - `services/core-api`: Rust/Axum product API. Owns catalog, auth, AI jobs, social/boards, and commerce modules; it is the forward path.
-- `services/api`: Fastify legacy compatibility API. Keep until its remaining endpoints are migrated to `core-api`, then retire it.
-- `services/ai`: legacy TypeScript stub adapter; hosted/self-hosted provider adapters belong behind the Rust `AIProvider` trait going forward.
+- `services/api` and `services/ai`: archived legacy TypeScript MVP source; they are no longer in active workspaces or Docker Compose. The Rust core API is the deployed product backend.
 - `packages/ui`: shared tokens and primitives
 - `infra`: Docker Compose and app Dockerfiles
 
@@ -25,7 +24,7 @@ npm run dev:api
 npm run dev:web
 ```
 
-The web app runs on `http://localhost:3000`. The API runs on `http://localhost:4000`.
+The web app runs on `http://localhost:3000`. The Rust core API runs on `http://localhost:4100`.
 
 ## Environment
 
