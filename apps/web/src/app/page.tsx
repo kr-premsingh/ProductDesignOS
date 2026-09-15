@@ -32,7 +32,7 @@ export default function DooniqHome() {
   }), [filter, search, tiles]);
 
   return (
-    <main className="mx-auto max-w-[1440px] px-3 py-5 text-[#1d1d1f] sm:px-5 lg:px-8">
+    <main className="w-full px-3 py-5 text-[#1d1d1f] sm:px-5 lg:px-8 2xl:px-12">
       <div className="flex flex-col gap-4 border-b border-black/[0.08] pb-5 md:flex-row md:items-center md:justify-between">
         <div><h1 className="text-2xl font-black tracking-normal sm:text-3xl">For your next thing.</h1><p className="mt-1 text-sm text-black/50">Save what moves you. Make it yours.</p></div>
         <div className="flex w-full items-center gap-2 rounded-full border border-black/[0.1] bg-white px-4 py-2.5 shadow-sm md:w-[360px]">
