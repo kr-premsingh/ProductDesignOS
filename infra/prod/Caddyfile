@@ -2,7 +2,7 @@
 	email {$LETSENCRYPT_EMAIL}
 }
 
-{$DOMAIN} {
+{$COMPANY_DOMAIN}, {$PRODUCT_DOMAIN} {
 	encode zstd gzip
 
 	handle /api/* {

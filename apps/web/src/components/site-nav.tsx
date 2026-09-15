@@ -37,7 +37,7 @@ function SiteNavInner() {
             <span className="grid h-10 w-10 place-items-center rounded-2xl border border-cyan/25 bg-cyan/12 text-cyan shadow-glow">
               <Logomark size={18} />
             </span>
-            <span className="truncate text-white">ProductDesignOS</span>
+            <span className="truncate text-white">Dooniq</span>
           </Link>
 
           <div className="hidden items-center gap-6 text-sm text-white/70 md:flex">

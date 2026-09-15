@@ -1,19 +1,22 @@
 # Home Server Deployment
 
-This production profile runs ProductDesignOS behind Caddy on a Linux home server. Caddy terminates HTTPS automatically through Let's Encrypt and routes:
+This production profile serves two sites behind Caddy on a Linux home server. Caddy terminates HTTPS automatically through Let's Encrypt and routes:
 
-- `https://$DOMAIN/` to the Next.js web app
-- `https://$DOMAIN/api/*` to the Fastify API
-- `https://$DOMAIN/core-api/*` to the Rust core API (proxied via the Next.js rewrite, same-origin from the browser)
-- `https://$DOMAIN/health` to the API health check
+- `https://$COMPANY_DOMAIN/` (`productdesignos.com`) to the ProductDesignOS company site
+- `https://$PRODUCT_DOMAIN/` (`dooniq.com`) to the Dooniq product
+- `https://$PRODUCT_DOMAIN/api/*` to the Fastify API
+- `https://$PRODUCT_DOMAIN/core-api/*` to the Rust core API (proxied via the Next.js rewrite, same-origin from the browser)
+- `https://$PRODUCT_DOMAIN/health` to the API health check
 
 ## Server Prerequisites
 
 1. Install Docker and Docker Compose on the Linux server.
 2. Make sure ports `80` and `443` are reachable from the internet.
-3. Create DNS records for the domain:
-   - `A` record: `@` -> your home server public IP
-   - optional `CNAME`: `www` -> `@`
+3. In Cloudflare DNS, create records for both domains:
+  - `A` record: `productdesignos.com` / `@` -> your home server public IP
+  - `A` record: `dooniq.com` / `@` -> your home server public IP
+  - optional `CNAME` records: `www` -> `@` for each domain
+  - keep records **DNS only** while Caddy obtains its first Let's Encrypt certificate; you may enable Cloudflare proxy afterward.
 4. If the server is behind a router, forward ports `80` and `443` to the server.
 
 ## First Deploy

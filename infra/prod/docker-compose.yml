@@ -9,7 +9,8 @@ services:
       - 1.1.1.1
       - 8.8.8.8
     environment:
-      DOMAIN: ${DOMAIN}
+      COMPANY_DOMAIN: ${COMPANY_DOMAIN}
+      PRODUCT_DOMAIN: ${PRODUCT_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     ports:
       - "80:80"
