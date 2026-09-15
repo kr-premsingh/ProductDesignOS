@@ -17,10 +17,12 @@ Flat, fine for the logo-demo MVP; doesn't yet reflect the module boundaries (aut
 
 ```
 apps/
-  web/
+  company/                    -- ProductDesignOS company site (planned extraction)
+    src/
+      app/                     -- company landing, team, partners, deals, legal
+  web/                         -- Dooniq product application
     src/
       app/                      -- Next.js routes (thin: fetch + compose only)
-        (marketing)/             -- landing, about, for-creators, pricing
         explore/                 -- feed
         studio/                  -- AI remix workspace
         p/[username]/            -- public profile/portfolio
@@ -64,6 +66,12 @@ packages/
 docs/                             -- this planning set (00-13...), kept as living documentation
 infra/                             -- unchanged for now
 ```
+
+## Company/Product frontend split
+
+**Current pilot:** `apps/web` uses host-based routing: `productdesignos.com` rewrites `/` to the company page, and `dooniq.com` serves product routes. This is one container because both sites are early, share a release cadence, and need no cross-domain auth.
+
+**Extraction trigger:** create `apps/company` as a separate Next.js application when company content needs an independent release cycle, a different team, or materially different marketing/SEO dependencies. Caddy then routes each domain to its own Docker service. Until that trigger, one host-routed web app is the smaller, safer monorepo shape.
 
 ## Migration principles
 

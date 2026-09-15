@@ -4,14 +4,18 @@ ProductDesignOS is an MVP for an individuality-first design operating system: a 
 
 > **Planning v2:** The full product vision, architecture, and roadmap (discovery + AI remix + portfolio + marketplace, across multiple verticals) is being redesigned. See [docs/00-overview.md](docs/00-overview.md) before making significant product/architecture changes. The code below is the original MVP scaffold and is treated as reference only.
 
-## Stack
+## Monorepo & Services
 
 - Monorepo with npm workspaces
-- `apps/web`: Next.js, TypeScript, Tailwind CSS
-- `services/api`: Fastify API, JWT auth, in-memory MVP stores
-- `services/ai`: adapter layer with deterministic logo stubs
+- `apps/web`: Dooniq product frontend (Next.js, TypeScript, Tailwind CSS). It currently host-routes the ProductDesignOS company site at `productdesignos.com`; it becomes `apps/company` only when the company site needs an independent release cycle.
+- `apps/company` (planned): ProductDesignOS company frontend for brand, team, partnerships, and deals.
+- `services/core-api`: Rust/Axum product API. Owns catalog, auth, AI jobs, social/boards, and commerce modules; it is the forward path.
+- `services/api`: Fastify legacy compatibility API. Keep until its remaining endpoints are migrated to `core-api`, then retire it.
+- `services/ai`: legacy TypeScript stub adapter; hosted/self-hosted provider adapters belong behind the Rust `AIProvider` trait going forward.
 - `packages/ui`: shared tokens and primitives
 - `infra`: Docker Compose and app Dockerfiles
+
+Each deployed backend service has its own Dockerfile and Compose service. The frontend split is intentionally deferred while both domains share the same deployment and data model; this avoids duplicate auth, packages, and deployments during the pilot.
 
 ## Run Locally
 
@@ -75,6 +79,16 @@ Seed data lives in `services/api/src/seed.ts` and is mirrored in the web fallbac
 ```bash
 docker compose -f infra/docker-compose.yml up --build
 ```
+
+To build, start, and smoke-test the full local stack in one command:
+
+```bash
+bash scripts/test-stack.sh
+# or, from Git Bash/WSL:
+npm run test:docker
+```
+
+It checks the Dooniq frontend (`3000`), legacy API (`4000`), and Rust core API (`4100`); Postgres and Redis are Compose dependencies.
 
 ## Production Deploy
 

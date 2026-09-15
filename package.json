@@ -11,6 +11,7 @@
     "dev": "npm run dev --workspace apps/web",
     "dev:web": "npm run dev --workspace apps/web",
     "dev:api": "npm run dev --workspace services/api",
+    "test:docker": "bash scripts/test-stack.sh",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
