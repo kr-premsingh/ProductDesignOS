@@ -1,10 +1,19 @@
-import { ArrowUpRight, Compass, HeartHandshake, Sparkles, UsersRound } from "lucide-react";
+import { ArrowUpRight, Compass, HeartHandshake, Sparkles, UsersRound, Wand2, ShoppingBag } from "lucide-react";
 
 const principles = [
   { icon: Compass, title: "Taste is a starting point", copy: "We build systems that begin with what matters to you, not a template library." },
   { icon: Sparkles, title: "AI should feel personal", copy: "The point is not more output. It is work that speaks in your voice." },
   { icon: HeartHandshake, title: "Craft stays human", copy: "Technology expands possibility; creators and providers bring it to life." }
 ];
+
+const loopSteps = [
+  { icon: Compass, title: "Discover", copy: "Find visual work that starts a thought." },
+  { icon: Wand2, title: "Remix", copy: "Shape that thought into something distinctly yours." },
+  { icon: Sparkles, title: "Share", copy: "Build a portfolio around your point of view." },
+  { icon: ShoppingBag, title: "Make it real", copy: "Work with a creator or provider when it is ready." }
+];
+
+const categories = ["Brand identities", "Apparel & prints", "Invitations", "Spaces & decor"];
 
 export const metadata = {
   title: "ProductDesignOS | Design for individuality",
@@ -19,12 +28,20 @@ export default function CompanyPage() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,9,14,0.94)_0%,rgba(7,10,15,0.72)_54%,rgba(7,10,15,0.3)_100%)]" />
         <div className="relative mx-auto flex min-h-[calc(100vh-190px)] max-w-7xl items-center">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase text-cyan">ProductDesignOS</p>
-            <h1 className="mt-5 text-5xl font-black leading-[1.06] md:text-7xl">Building a world beyond templates.</h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/75 md:text-xl">We are building the operating system for individuality: tools, networks, and marketplaces that help people make their taste visible, useful, and uniquely their own.</p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-2 text-xs font-semibold uppercase text-cyan backdrop-blur-md"><span className="h-2 w-2 rounded-full bg-lime" /> ProductDesignOS</div>
+            <h1 className="mt-6 text-5xl font-black leading-[1.08] md:text-7xl">A Design OS for Individuality.</h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/75 md:text-xl">Most design today is templates wearing different colors. We are building tools, networks, and marketplaces where what you make can carry your story instead.</p>
             <a href="https://dooniq.com" className="mt-9 inline-flex items-center gap-2 rounded-full bg-glass px-6 py-3 text-sm font-semibold text-charcoal transition hover:bg-cyan">Explore Dooniq <ArrowUpRight size={17} /></a>
           </div>
         </div>
+      </section>
+
+      <section className="border-y border-white/10 bg-[#080B10] px-4 py-5">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold uppercase text-muted">Built for more than one kind of maker</p><div className="flex flex-wrap gap-2">{categories.map((category) => <a key={category} href="https://dooniq.com" className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-semibold transition hover:border-cyan/60 hover:bg-white/10">{category}</a>)}</div></div>
+      </section>
+
+      <section className="bg-[#080B10] px-4 py-20">
+        <div className="mx-auto max-w-7xl"><div className="mb-10 max-w-3xl"><p className="text-sm font-semibold uppercase text-magenta">From taste to output</p><h2 className="mt-3 text-3xl font-black md:text-5xl">The full path from inspiration to something real.</h2></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{loopSteps.map(({ icon: Icon, title, copy }, index) => <article key={title} className="rounded-card border border-white/10 bg-white/6 p-5"><span className="text-xs text-muted">0{index + 1}</span><Icon size={21} className="mt-5 text-cyan"/><h3 className="mt-4 text-xl font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/64">{copy}</p></article>)}</div></div>
       </section>
 
       <section id="mission" className="bg-[#080B10] px-4 py-20">
@@ -50,6 +67,8 @@ export default function CompanyPage() {
           <a href="https://dooniq.com" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-cyan hover:text-cyan">Explore the product <ArrowUpRight size={17} /></a>
         </div>
       </section>
+
+      <section className="bg-[#0B0F14] px-4 py-20"><div className="mx-auto grid max-w-7xl gap-6 rounded-panel border border-white/10 bg-white/6 p-8 text-center md:p-14"><p className="text-sm font-semibold uppercase text-cyan">Dooniq is open</p><h2 className="text-3xl font-black md:text-5xl">Your story deserves more than a template.</h2><div><a href="https://dooniq.com" className="inline-flex items-center gap-2 rounded-full bg-glass px-6 py-3 text-sm font-semibold text-charcoal hover:bg-cyan">Explore Dooniq <ArrowUpRight size={17}/></a></div></div></section>
     </main>
   );
 }
