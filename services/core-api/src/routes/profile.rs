@@ -1,8 +1,8 @@
 use axum::{extract::{Path, State}, Json};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-use crate::{error::AppError, state::AppState};
+use crate::{error::AppError, routes::auth::CurrentUser, state::AppState};
 
 #[derive(Serialize, FromRow)]
 pub struct PortfolioDesign {
@@ -45,6 +45,13 @@ pub struct ProfileResponse {
     pub following_count: i64,
 }
 
+#[derive(Deserialize)]
+pub struct UpdateProfilePayload {
+    pub display_name: Option<String>,
+    pub bio: Option<String>,
+    pub avatar_url: Option<String>,
+}
+
 pub async fn get_profile(
     State(state): State<AppState>,
     Path(username): Path<String>,
@@ -81,4 +88,27 @@ pub async fn get_profile(
         .bind(&profile.id).fetch_one(&state.pool).await?;
 
     Ok(Json(ProfileResponse { profile, designs, offerings, follower_count, following_count }))
+}
+
+pub async fn update_my_profile(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Json(payload): Json<UpdateProfilePayload>,
+) -> Result<Json<PortfolioProfile>, AppError> {
+    let display_name = payload.display_name.map(|value| value.trim().to_string()).filter(|value| !value.is_empty());
+    let bio = payload.bio.map(|value| value.trim().to_string()).filter(|value| !value.is_empty());
+    let avatar_url = payload.avatar_url.map(|value| value.trim().to_string()).filter(|value| !value.is_empty());
+    let profile = sqlx::query_as::<_, PortfolioProfile>(
+        "UPDATE users SET display_name = COALESCE($2, display_name), bio = COALESCE($3, bio), avatar_url = COALESCE($4, avatar_url)
+         WHERE id = $1
+         RETURNING id, username, display_name, bio, avatar_url, provider_status, provider_categories, provider_capabilities, provider_portfolio",
+    )
+    .bind(&current_user.id)
+    .bind(display_name)
+    .bind(bio)
+    .bind(avatar_url)
+    .fetch_optional(&state.pool)
+    .await?
+    .ok_or(AppError::NotFound)?;
+    Ok(Json(profile))
 }

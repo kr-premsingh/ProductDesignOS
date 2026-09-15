@@ -58,6 +58,7 @@ async fn main() {
         .route("/designs/:id/visibility", axum::routing::patch(routes::social::set_design_visibility))
         .route("/users/:username/follow", post(routes::social::toggle_follow))
         .route("/profiles/:username", get(routes::profile::get_profile))
+        .route("/profiles/me", axum::routing::patch(routes::profile::update_my_profile))
         .with_state(state)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());
