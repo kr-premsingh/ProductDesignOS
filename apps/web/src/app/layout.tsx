@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isCompanySite = hostname === "productdesignos.com" || hostname === "www.productdesignos.com";
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[var(--surface)] text-white">
+      <body className={`min-h-screen ${isCompanySite ? "company-shell bg-[var(--surface)] text-white" : "dooniq-shell bg-[#f5f5f7] text-[#1d1d1f]"}`}>
         {isCompanySite ? <><CompanyNav />{children}</> : <AuthProvider><SiteNav /><main className="min-h-screen pb-28">{children}</main></AuthProvider>}
       </body>
     </html>
