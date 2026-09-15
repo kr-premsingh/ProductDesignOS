@@ -1,18 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Compass, TrendingUp, Play, Info, User, ShoppingBag, House, WandSparkles } from "lucide-react";
+import { Compass, User, ShoppingBag, House, WandSparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
 
 const links = [
-  { label: "Inspire", href: "/inspire", icon: Compass },
-  { label: "Trends", href: "/design-trends", icon: TrendingUp },
-  { label: "Demo", href: "/app/demo/logo", icon: Play },
+  { label: "Explore", href: "/", icon: Compass },
+  { label: "Studio", href: "/studio", icon: WandSparkles },
   { label: "Marketplace", href: "/marketplace", icon: ShoppingBag },
-  { label: "For Creators", href: "/#for-creators", icon: Info },
-  { label: "About", href: "/about", icon: Info }
+  { label: "Become a provider", href: "/provider/onboard", icon: User }
 ];
 
 const mobileLinks = [

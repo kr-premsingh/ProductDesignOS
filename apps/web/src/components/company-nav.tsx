@@ -11,9 +11,9 @@ export function CompanyNav() {
           <span>ProductDesignOS</span>
         </Link>
         <div className="hidden items-center gap-5 text-sm text-white/70 md:flex">
-          <Link href="/#mission" className="hover:text-white">About</Link>
-          <Link href="/#team" className="hover:text-white">Team</Link>
-          <Link href="/#partners" className="hover:text-white">Partners</Link>
+          <Link href="/vision" className="hover:text-white">Vision</Link>
+          <Link href="/about" className="hover:text-white">About</Link>
+          <Link href="/contact" className="hover:text-white">Contact</Link>
         </div>
         <a href="https://dooniq.com" className="inline-flex items-center gap-2 rounded-full bg-glass px-4 py-2 text-sm font-semibold text-charcoal transition hover:bg-cyan">
           Explore Dooniq <ArrowUpRight size={16} />

@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+
+export default function AboutPage() {
+  return <main className="mx-auto max-w-5xl px-4 py-20"><p className="text-sm font-semibold uppercase text-magenta">About ProductDesignOS</p><h1 className="mt-4 text-5xl font-black leading-[1.08] md:text-7xl">We are building for the individuality economy.</h1><div className="mt-12 grid gap-10 text-lg leading-8 text-white/70 md:grid-cols-2"><p>People have more taste, more tools, and more ways to share than ever. Yet the systems around creativity still push everyone toward the same templates, catalogs, and generic outcomes.</p><p>ProductDesignOS exists to make personal expression easier to discover, shape, share, and sustain. Dooniq is our first product: a home for inspiration that can become something of your own.</p></div><Link href="https://dooniq.com" className="mt-14 inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 font-semibold hover:border-cyan hover:text-cyan">Explore Dooniq <ArrowUpRight size={17}/></Link></main>;
+}
