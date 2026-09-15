@@ -1,100 +1,24 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { inspireTiles } from "@/lib/mock-data";
-import { useAuth } from '@/lib/auth';
+import { useEffect, useState } from "react";
+import { Grid2X2, Link as LinkIcon, MapPin, Package } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+
+type Profile = { profile: { username: string; display_name?: string; bio?: string; avatar_url?: string; provider_status?: string; provider_categories: string[]; provider_capabilities: string[]; provider_portfolio: string[] }; designs: { id: string; title?: string; asset_url: string; tags: string[] }[]; offerings: { id: string; title: string; description?: string; fulfillment_type: string }[]; follower_count: number; following_count: number };
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
-  const { user, token } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [saved, setSaved] = useState<string[]>([]);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/profile/${params.username}`);
-        if (res.ok) {
-          const data = await res.json();
-          setProfile(data.profile || data);
-        }
-      } catch (err) {}
-    }
-    load();
-    (async () => {
-      try {
-        if (isOwner && token) {
-          const res = await fetch('/api/me/saved', { headers: { authorization: `Bearer ${token}` } });
-          if (res.ok) {
-            const data = await res.json();
-            const ids = (data.items || []).map((i: any) => i.id);
-            setSaved(ids);
-            return;
-          }
-        }
-      } catch (err) {}
-      try {
-        const savedSet = JSON.parse(localStorage.getItem('saved') || '[]');
-        setSaved(Array.isArray(savedSet) ? savedSet : []);
-      } catch (err) {
-        setSaved([]);
-      }
-    })();
-  }, [params.username]);
-
+  const { user } = useAuth();
+  const [data, setData] = useState<Profile | null>(null);
+  const [error, setError] = useState(false);
   const isOwner = user?.username === params.username;
 
-  return (
-    <main>
-      <section className="relative min-h-[360px] overflow-hidden">
-        <img src="https://picsum.photos/seed/nova-hero/1600/800" alt="" className="absolute inset-0 h-full w-full object-cover opacity-55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/35 to-transparent" />
-        <div className="relative mx-auto flex min-h-[360px] max-w-7xl flex-col justify-end px-4 pb-10">
-          <span className="mb-3 w-fit rounded-full bg-cyan px-3 py-1 text-xs font-semibold uppercase text-charcoal">{profile?.role || 'Student'}</span>
-          <h1 className="text-5xl font-black">@{params.username}</h1>
-          <p className="mt-3 max-w-xl text-muted">{profile?.bio || 'Identity systems with pulse.'}</p>
-        </div>
-      </section>
-      <section className="mx-auto max-w-7xl px-4 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Showcase</h2>
-          {isOwner ? <button className="rounded-full bg-white/6 px-3 py-2">Manage items</button> : null}
-        </div>
+  useEffect(() => {
+    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+    fetch(`${coreApiUrl}/profiles/${params.username}`).then((res) => { if (!res.ok) throw new Error(); return res.json(); }).then(setData).catch(() => setError(true));
+  }, [params.username]);
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {inspireTiles.slice(0, 6).map((tile) => (
-            <article key={tile.id} className="overflow-hidden rounded-card border border-white/10 bg-white/6">
-              <img src={tile.image} alt="" className="h-64 w-full object-cover" />
-              <div className="p-4">
-                <h2 className="font-semibold">{tile.title}</h2>
-                <p className="mt-1 text-sm text-muted">{tile.category}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-12">
-          <h3 className="text-xl font-semibold">Saved</h3>
-          <div className="grid gap-4 md:grid-cols-3 mt-4">
-            {saved.length ? (
-              saved.map((id) => {
-                const tile = inspireTiles.find((t) => t.id === id);
-                if (!tile) return null;
-                return (
-                  <article key={tile.id} className="overflow-hidden rounded-card border border-white/10 bg-white/6">
-                    <img src={tile.image} alt="" className="h-64 w-full object-cover" />
-                    <div className="p-4">
-                      <h2 className="font-semibold">{tile.title}</h2>
-                      <p className="mt-1 text-sm text-muted">{tile.category}</p>
-                    </div>
-                  </article>
-                );
-              })
-            ) : (
-              <p className="text-muted">No saved items yet.</p>
-            )}
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+  if (error) return <main className="mx-auto max-w-5xl px-4 py-20 text-center text-muted">Profile not found.</main>;
+  if (!data) return <main className="mx-auto max-w-5xl px-4 py-20 text-center text-muted">Loading portfolio...</main>;
+  const { profile, designs, offerings } = data;
+  return <main className="mx-auto max-w-5xl px-4 py-10"><section className="flex flex-col gap-6 sm:flex-row sm:items-center"><div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-full border border-white/15 bg-white/8 text-3xl font-black text-cyan">{profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : profile.username.slice(0, 1).toUpperCase()}</div><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-bold">{profile.display_name || `@${profile.username}`}</h1>{profile.provider_status && profile.provider_status !== "none" ? <span className="rounded-full bg-cyan/15 px-3 py-1 text-xs font-semibold text-cyan">Provider</span> : null}</div><p className="mt-2 text-sm text-muted">@{profile.username}</p><p className="mt-3 max-w-xl text-sm leading-6 text-white/80">{profile.bio || "Creating things that feel personal."}</p></div><div className="flex gap-6 text-center text-sm"><span><b className="block text-lg">{designs.length}</b>designs</span><span><b className="block text-lg">{data.follower_count}</b>followers</span><span><b className="block text-lg">{data.following_count}</b>following</span></div></section><div className="mt-10 border-t border-white/10 pt-5"><div className="flex items-center gap-2 text-sm font-semibold"><Grid2X2 size={17}/> Portfolio</div><div className="mt-5 grid grid-cols-2 gap-1 sm:grid-cols-3">{designs.map((design) => <article key={design.id} className="group relative aspect-square overflow-hidden bg-white/6"><img src={design.asset_url} alt={design.title || "Portfolio design"} className="h-full w-full object-cover transition duration-300 group-hover:scale-105"/><span className="absolute inset-x-0 bottom-0 bg-black/55 p-3 text-sm font-semibold opacity-0 transition group-hover:opacity-100">{design.title || "Untitled"}</span></article>)}</div>{!designs.length ? <p className="py-12 text-center text-sm text-muted">{isOwner ? "Publish a Studio variant to start your portfolio." : "No public work yet."}</p> : null}</div>{offerings.length ? <section className="mt-12"><div className="flex items-center gap-2 text-sm font-semibold"><Package size={17}/> Services & offerings</div><div className="mt-4 grid gap-3 sm:grid-cols-2">{offerings.map((offering) => <article key={offering.id} className="rounded-card border border-white/10 bg-white/6 p-5"><h2 className="font-semibold">{offering.title}</h2><p className="mt-2 text-sm text-muted">{offering.description}</p><p className="mt-4 text-xs uppercase text-cyan">{offering.fulfillment_type}</p></article>)}</div></section> : null}{profile.provider_portfolio.length ? <section className="mt-12"><div className="flex items-center gap-2 text-sm font-semibold"><LinkIcon size={17}/> Elsewhere</div><div className="mt-4 flex flex-wrap gap-2">{profile.provider_portfolio.map((url) => <a key={url} href={url} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-4 py-2 text-sm text-muted hover:text-cyan">Portfolio link</a>)}</div></section> : null}</main>;
 }

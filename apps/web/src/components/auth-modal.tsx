@@ -18,7 +18,7 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
       if (mode === 'login') {
         await login(String(fd.get('username') || ''), String(fd.get('password') || ''));
       } else {
-        await signup(String(fd.get('username') || ''), String(fd.get('email') || ''), String(fd.get('password') || ''), String(fd.get('role') || 'student'));
+        await signup(String(fd.get('username') || ''), String(fd.get('email') || ''), String(fd.get('password') || ''), String(fd.get('role') || 'user'));
       }
       onClose();
     } catch (err: any) {
@@ -44,8 +44,8 @@ export function AuthModal({ open, onClose }: { open: boolean; onClose: () => voi
           <input name="password" type="password" placeholder="Password" className="rounded-card border border-white/10 bg-white/8 px-3 py-3" required />
           {mode === 'signup' && (
             <select name="role" className="rounded-card border border-white/10 bg-white/8 px-3 py-3">
-              <option value="student">Student</option>
-              <option value="influencer">Influencer</option>
+              <option value="user">Just exploring</option>
+              <option value="creator">Creator</option>
               <option value="provider">Provider</option>
             </select>
           )}

@@ -23,8 +23,14 @@ async fn main() {
 
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "dev-secret".to_string());
+    let admin_emails = std::env::var("ADMIN_EMAILS")
+        .unwrap_or_default()
+        .split(',')
+        .map(|email| email.trim().to_lowercase())
+        .filter(|email| !email.is_empty())
+        .collect();
     let pool = db::create_pool(&database_url).await;
-    let state = AppState { pool, jwt_secret, ai_provider: Arc::new(StubProvider) };
+    let state = AppState { pool, jwt_secret, admin_emails, ai_provider: Arc::new(StubProvider) };
 
     let app = Router::new()
         .route("/health", get(routes::health::health))
@@ -47,6 +53,7 @@ async fn main() {
         .route("/designs/:id/save", post(routes::social::toggle_save))
         .route("/designs/:id/visibility", axum::routing::patch(routes::social::set_design_visibility))
         .route("/users/:username/follow", post(routes::social::toggle_follow))
+        .route("/profiles/:username", get(routes::profile::get_profile))
         .with_state(state)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());

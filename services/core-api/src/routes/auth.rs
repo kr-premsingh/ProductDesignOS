@@ -19,7 +19,7 @@ use crate::{
     state::AppState,
 };
 
-const ALLOWED_ADDITIONAL_ROLES: [&str; 2] = ["creator", "provider"];
+const ALLOWED_ROLES: [&str; 3] = ["user", "creator", "provider"];
 const SIGNUP_BONUS_CREDITS: i32 = 10;
 
 #[derive(Serialize, Deserialize)]
@@ -54,9 +54,10 @@ fn decode_claims(token: &str, jwt_secret: &str) -> Result<Claims, AppError> {
     let roles = if let Some(arr) = v.get("roles").and_then(|x| x.as_array()) {
         arr.iter().filter_map(|r| r.as_str().map(String::from)).collect()
     } else if let Some(role) = v.get("role").and_then(|x| x.as_str()) {
-        vec!["explorer".to_string(), role.to_string()]
+        let role = if role == "student" { "user" } else { role };
+        vec!["user".to_string(), role.to_string()]
     } else {
-        vec!["explorer".to_string()]
+        vec!["user".to_string()]
     };
     Ok(Claims { sub, username, roles, exp: 0 })
 }
@@ -85,6 +86,11 @@ fn hash_password(password: &str) -> Result<String, AppError> {
 }
 
 fn verify_password(password: &str, hash: &str) -> Result<(), AppError> {
+    if hash.starts_with("$2") {
+        return bcrypt::verify(password, hash)
+            .map_err(|_| AppError::Unauthorized)
+            .and_then(|matches| if matches { Ok(()) } else { Err(AppError::Unauthorized) });
+    }
     let parsed = PasswordHash::new(hash).map_err(|_| AppError::Unauthorized)?;
     Argon2::default()
         .verify_password(password.as_bytes(), &parsed)
@@ -109,10 +115,9 @@ pub async fn signup(
     State(state): State<AppState>,
     Json(payload): Json<SignupPayload>,
 ) -> Result<Json<AuthResponse>, AppError> {
-    if let Some(role) = &payload.role {
-        if !ALLOWED_ADDITIONAL_ROLES.contains(&role.as_str()) {
-            return Err(AppError::BadRequest(format!("unsupported role: {role}")));
-        }
+    let selected_role = payload.role.as_deref().unwrap_or("user");
+    if !ALLOWED_ROLES.contains(&selected_role) {
+        return Err(AppError::BadRequest(format!("unsupported role: {selected_role}")));
     }
 
     let existing = sqlx::query_scalar::<_, i64>("SELECT count(*) FROM users WHERE username = $1 OR email = $2")
@@ -137,9 +142,12 @@ pub async fn signup(
     .execute(&state.pool)
     .await?;
 
-    let mut roles = vec!["explorer".to_string()];
-    if let Some(role) = &payload.role {
-        roles.push(role.clone());
+    let mut roles = vec!["user".to_string()];
+    if selected_role != "user" {
+        roles.push(selected_role.to_string());
+    }
+    if state.admin_emails.iter().any(|email| email == &payload.email.to_lowercase()) {
+        roles.push("admin".to_string());
     }
     for role in &roles {
         sqlx::query("INSERT INTO user_roles (user_id, role) VALUES ($1, $2) ON CONFLICT DO NOTHING")

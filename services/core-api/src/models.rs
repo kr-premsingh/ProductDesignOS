@@ -39,8 +39,8 @@ pub struct SignupPayload {
     pub username: String,
     pub email: String,
     pub password: String,
-    /// Optional additional role to grant at signup (e.g. "creator", "provider").
-    /// Every account always gets "explorer"; this is additive, not a fixed account type (docs/04).
+    /// Optional role selected by the member at signup ("user", "creator", or "provider").
+    /// Admin is only granted from the server-side ADMIN_EMAILS allowlist.
     pub role: Option<String>,
 }
 

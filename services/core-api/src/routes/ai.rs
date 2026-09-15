@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
 use crate::{
-    ai::AIProvider,
     error::AppError,
     models::Design,
     routes::auth::CurrentUser,
