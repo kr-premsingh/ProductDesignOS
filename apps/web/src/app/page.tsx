@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, ArrowUpRight, Flame, ShoppingBag, Sparkles, Wand2, Zap } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Flame, ShoppingBag, Sparkles, Wand2, Zap } from "lucide-react";
 import Link from "next/link";
 import { FeedCard } from "@/components/feed-card";
 import { categories as fallbackCategories, inspireTiles as fallbackTiles } from "@/lib/mock-data";
@@ -69,6 +69,184 @@ function TrendCard({ tile }: { tile: Tile }) {
   );
 }
 
+const HERO_SLIDES = [
+  {
+    kicker: "The inspiration marketplace",
+    title: ["See it. Remix it.", "Make it yours."],
+    body: "Shop remixable designs for posters, merch, socials, and interiors — personalize any piece with AI, or buy it made by real creators.",
+    seed: "dooniq-hero",
+    accent: "cyan"
+  },
+  {
+    kicker: "Fresh this week",
+    title: ["New drops,", "zero blank canvas."],
+    body: "Every week, creators publish remixable directions. Start from something great instead of nothing.",
+    seed: "dooniq-hero-drops",
+    accent: "magenta"
+  },
+  {
+    kicker: "Dooniq Studio",
+    title: ["Your idea.", "Three directions.", "Seconds."],
+    body: "Type a feeling, a format, a vibe — Studio drafts distinct remixable directions you can refine, save, or send to a creator.",
+    seed: "dooniq-hero-studio",
+    accent: "lime"
+  },
+  {
+    kicker: "Get it made",
+    title: ["From screen", "to doorstep."],
+    body: "Buy any design as a finished product — printed, stitched, or built by vetted providers.",
+    seed: "dooniq-hero-made",
+    accent: "cyan"
+  }
+];
+
+const SLIDE_MS = 6000;
+
+function HeroCarousel() {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportWidth, setViewportWidth] = useState(0);
+  const count = HERO_SLIDES.length;
+  const GAP = 12;
+
+  const go = useCallback((next: number) => setActive(((next % count) + count) % count), [count]);
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(() => setActive((current) => (current + 1) % count), SLIDE_MS);
+    return () => clearInterval(timer);
+  }, [paused, count]);
+
+  useEffect(() => {
+    const node = viewportRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver((entries) => setViewportWidth(entries[0].contentRect.width));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  // Desktop (>=768px): MS Store-style peek — active slide edges align with the page's
+  // adaptive content padding (px-4 / sm:px-6 / lg:px-10 / 2xl:px-16), neighbours peek past it.
+  // Mobile: classic full-width carousel with a small gutter.
+  const desktop = viewportWidth >= 768;
+  const pad = viewportWidth >= 1536 ? 64 : viewportWidth >= 1024 ? 40 : viewportWidth >= 640 ? 24 : 16;
+  const PEEK = 72;
+  const slideWidth = desktop ? viewportWidth - 2 * pad - 2 * PEEK : viewportWidth - 24;
+  const step = slideWidth + GAP;
+  // Center the active slide; track contains a clone on each end so the loop is visually seamless.
+  const offset = viewportWidth / 2 - slideWidth / 2 - (active + 1) * step;
+
+  // [last, ...slides, first] — the clones make first/last wrap seamlessly in the peek layout.
+  const track = [HERO_SLIDES[count - 1], ...HERO_SLIDES, HERO_SLIDES[0]];
+
+  return (
+    <section
+      className="group/carousel pt-3"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div ref={viewportRef} className="relative overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)]"
+          style={{ gap: GAP, transform: `translateX(${offset}px)` }}
+        >
+          {track.map((slide, index) => {
+            const slideIndex = index - 1;
+            const wrapped = ((slideIndex % count) + count) % count;
+            return (
+              <HeroSlide
+                key={`${slide.seed}-${index}`}
+                slide={slide}
+                isActive={slideIndex === active}
+                width={slideWidth}
+                onClick={slideIndex !== active ? () => go(wrapped) : undefined}
+              />
+            );
+          })}
+        </div>
+
+        {/* Arrows */}
+        <button
+          onClick={() => go(active - 1)}
+          aria-label="Previous slide"
+          className="absolute left-[28px] top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-charcoal/60 text-white opacity-0 shadow-lg backdrop-blur transition hover:bg-white hover:text-charcoal focus:opacity-100 group-hover/carousel:opacity-100 sm:left-[36px] sm:h-12 sm:w-12 lg:left-[52px] 2xl:left-[76px]"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={() => go(active + 1)}
+          aria-label="Next slide"
+          className="absolute right-[28px] top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-charcoal/60 text-white opacity-0 shadow-lg backdrop-blur transition hover:bg-white hover:text-charcoal focus:opacity-100 group-hover/carousel:opacity-100 sm:right-[36px] sm:h-12 sm:w-12 lg:right-[52px] 2xl:right-[76px]"
+        >
+          <ChevronRight size={20} />
+        </button>
+
+        {/* Dots */}
+        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-6">
+          {HERO_SLIDES.map((slide, index) => (
+            <button
+              key={slide.seed}
+              onClick={() => go(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${index === active ? "w-7 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroSlide({
+  slide,
+  isActive,
+  width,
+  onClick
+}: {
+  slide: (typeof HERO_SLIDES)[number];
+  isActive: boolean;
+  width: number;
+  onClick?: () => void;
+}) {
+  const accentClass = slide.accent === "magenta" ? "text-magenta" : slide.accent === "lime" ? "text-lime" : "text-cyan";
+  return (
+    <div
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      aria-label={onClick ? `Show slide: ${slide.kicker}` : undefined}
+      className={`relative shrink-0 overflow-hidden rounded-[28px] bg-charcoal transition-all duration-700 sm:rounded-[36px] ${onClick ? "cursor-pointer" : ""} ${isActive ? "" : "brightness-[0.55] hover:brightness-[0.75]"}`}
+      style={width ? { width } : undefined}
+    >
+      <img
+        src={`https://picsum.photos/seed/${slide.seed}/1600/1000`}
+        alt=""
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[7000ms] ease-linear ${isActive ? "scale-110 opacity-70" : "scale-105 opacity-60"}`}
+      />
+      <div className={`absolute inset-0 bg-gradient-to-r transition-opacity duration-700 ${isActive ? "from-black/75 via-black/45 to-black/10" : "from-black/70 via-black/55 to-black/40"}`} />
+      <div className={`relative flex min-h-[70vh] flex-col justify-end p-6 transition-opacity duration-500 sm:min-h-[76vh] sm:p-12 lg:p-16 ${isActive ? "opacity-100" : "opacity-0 md:opacity-25"}`}>
+        <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur">
+          <Sparkles size={12} className={accentClass} /> {slide.kicker}
+        </p>
+        <h1 className="max-w-3xl text-4xl font-black leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
+          {slide.title.map((line) => (
+            <span key={line} className="block">{line}</span>
+          ))}
+        </h1>
+        <p className="mt-4 max-w-xl text-sm leading-6 text-white/75 sm:text-base sm:leading-7">{slide.body}</p>
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          <Link href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#1d1d1f] transition hover:bg-cyan">
+            Shop the drop <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link href="/studio" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:border-white hover:bg-white hover:text-[#1d1d1f]">
+            <Wand2 size={16} /> Remix with AI
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DooniqHome() {
   const [categories, setCategories] = useState<string[]>(fallbackCategories);
   const [tiles, setTiles] = useState<Tile[]>(fallbackTiles);
@@ -85,7 +263,6 @@ export default function DooniqHome() {
       .catch(() => {});
   }, []);
 
-  const heroTile = tiles[0];
   const categoryTiles = useMemo(
     () => categories.map((category) => ({ name: category, tile: tiles.find((t) => t.category === category) })),
     [categories, tiles]
@@ -100,45 +277,11 @@ export default function DooniqHome() {
         New drops every week <span className="mx-2 text-white/30">•</span> <span className="text-cyan">50 free remix credits</span> on sign up
       </div>
 
-      {/* Hero — full-bleed editorial banner */}
-      <section className="px-3 pt-3 sm:px-5 lg:px-8 2xl:px-12">
-        <div className="relative overflow-hidden rounded-[28px] bg-charcoal sm:rounded-[36px]">
-          <img
-            src={imageFor(heroTile, "dooniq-hero")}
-            alt=""
-            className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70"
-            onError={(event) => {
-              const img = event.currentTarget;
-              if (img.dataset.fallback) return;
-              img.dataset.fallback = "1";
-              img.src = "https://picsum.photos/seed/dooniq-hero/1600/1000";
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
-          <div className="relative flex min-h-[70vh] flex-col justify-end p-6 sm:min-h-[76vh] sm:p-12 lg:p-16">
-            <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur">
-              <Sparkles size={12} className="text-cyan" /> The inspiration marketplace
-            </p>
-            <h1 className="max-w-3xl text-4xl font-black leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
-              See it. Remix it.<br />Make it yours.
-            </h1>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-white/75 sm:text-base sm:leading-7">
-              Shop remixable designs for posters, merch, socials, and interiors — personalize any piece with AI, or buy it made by real creators.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#1d1d1f] transition hover:bg-cyan">
-                Shop the drop <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link href="/studio" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:border-white hover:bg-white hover:text-[#1d1d1f]">
-                <Wand2 size={16} /> Remix with AI
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero — auto/manual carousel, MS Store-style peek on desktop */}
+      <HeroCarousel />
 
       {/* Shop by category — Snitch-style circles, Apple-clean spacing */}
-      <section className="px-3 pt-12 sm:px-5 sm:pt-16 lg:px-8 2xl:px-12">
+      <section className="px-4 pt-12 sm:px-6 sm:pt-16 lg:px-10 2xl:px-16">
         <SectionHeading eyebrow="Browse" title="Shop by category" href="/explore" cta="All designs" />
         <div className="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] sm:gap-6">
           {categoryTiles.map(({ name, tile }) => (
@@ -162,16 +305,18 @@ export default function DooniqHome() {
         </div>
       </section>
 
-      {/* Trending rail */}
-      <section className="px-3 pt-12 sm:px-5 sm:pt-16 lg:px-8 2xl:px-12">
-        <SectionHeading eyebrow="Hot right now" title="Trending this week" href="/explore" cta="View all" />
-        <div className="-mx-3 flex snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-2 [scrollbar-width:none] sm:-mx-5 sm:px-5 lg:-mx-8 lg:px-8 2xl:-mx-12 2xl:px-12">
+      {/* Trending rail — heading and first card share the same left rail */}
+      <section className="pt-12 sm:pt-16">
+        <div className="px-4 sm:px-6 lg:px-10 2xl:px-16">
+          <SectionHeading eyebrow="Hot right now" title="Trending this week" href="/explore" cta="View all" />
+        </div>
+        <div className="flex snap-x snap-mandatory scroll-pl-4 gap-4 overflow-x-auto pb-2 [scrollbar-width:none] before:w-0 before:shrink-0 before:content-[''] after:w-4 after:shrink-0 after:content-[''] sm:scroll-pl-6 sm:before:w-2 sm:after:w-6 lg:scroll-pl-10 lg:before:w-6 lg:after:w-10 2xl:scroll-pl-16 2xl:before:w-12 2xl:after:w-16">
           {trending.map((tile) => <TrendCard key={tile.id} tile={tile} />)}
         </div>
       </section>
 
       {/* Studio editorial banner */}
-      <section className="px-3 pt-12 sm:px-5 sm:pt-16 lg:px-8 2xl:px-12">
+      <section className="px-4 pt-12 sm:px-6 sm:pt-16 lg:px-10 2xl:px-16">
         <Link href="/studio" className="group relative block overflow-hidden rounded-[28px] bg-[linear-gradient(118deg,#0b0f14,#12303a_55%,#0b0f14)] p-8 sm:rounded-[36px] sm:p-14">
           <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-cyan/20 blur-3xl transition duration-700 group-hover:bg-cyan/30" />
           <div className="absolute -bottom-24 right-40 h-56 w-56 rounded-full bg-magenta/15 blur-3xl" />
@@ -191,7 +336,7 @@ export default function DooniqHome() {
       </section>
 
       {/* Fresh drops — Pinterest masonry */}
-      <section className="px-3 pt-12 sm:px-5 sm:pt-16 lg:px-8 2xl:px-12">
+      <section className="px-4 pt-12 sm:px-6 sm:pt-16 lg:px-10 2xl:px-16">
         <SectionHeading eyebrow="Just landed" title="Fresh drops" href="/explore" cta="Explore everything" />
         <div className="columns-2 gap-3 md:columns-3 lg:columns-4 xl:columns-5">
           {freshDrops.map((tile) => (
@@ -203,7 +348,7 @@ export default function DooniqHome() {
       </section>
 
       {/* Marketplace banner */}
-      <section className="px-3 py-12 sm:px-5 sm:py-16 lg:px-8 2xl:px-12">
+      <section className="px-4 py-12 sm:px-6 sm:py-16 lg:px-10 2xl:px-16">
         <div className="grid gap-4 md:grid-cols-2">
           <Link href="/marketplace" className="group flex min-h-56 flex-col justify-between overflow-hidden rounded-[28px] border border-black/[0.08] bg-white p-7 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(0,0,0,0.1)] sm:min-h-64 sm:p-10">
             <ShoppingBag size={22} className="text-magenta" />

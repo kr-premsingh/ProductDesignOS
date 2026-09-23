@@ -31,7 +31,7 @@ function SiteNavInner() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-[rgba(250,250,252,0.86)] shadow-[0_1px_0_rgba(0,0,0,0.03)] backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 md:flex-nowrap md:justify-between">
+        <nav className="flex w-full flex-wrap items-center gap-3 px-4 py-3 sm:px-6 md:flex-nowrap md:justify-between lg:px-10 2xl:px-16">
           <Link href="/" className="flex min-w-0 flex-1 items-center gap-2 text-sm font-semibold text-[#1d1d1f] md:flex-none">
             <span className="grid h-10 w-10 place-items-center rounded-2xl border border-black/[0.08] bg-white shadow-sm">
               <Logomark size={18} />

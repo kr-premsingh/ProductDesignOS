@@ -87,32 +87,37 @@ export default function ProfilePage({ params }: { params: { username: string } }
     return () => controller.abort();
   }, [params.username]);
 
-  // Owner's saved collection — localStorage ids resolved against the feed.
+  // Owner's saved collection — core-api when signed in, localStorage ids as fallback.
   useEffect(() => {
     if (!isOwner) return;
+    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
+    if (token) {
+      Promise.all([
+        fetch(`${coreApiUrl}/profiles/me/saved`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => (res.ok ? res.json() : [])),
+        fetchCategories(coreApiUrl).catch(() => [])
+      ])
+        .then(([apiDesigns, apiCategories]) => {
+          if (Array.isArray(apiDesigns) && apiDesigns.length) {
+            setSavedTiles(apiDesigns.map((d: any) => toTile(d, apiCategories)));
+            return;
+          }
+          throw new Error("empty");
+        })
+        .catch(() => {
+          let savedIds: string[] = [];
+          try {
+            savedIds = JSON.parse(localStorage.getItem("saved") || "[]");
+          } catch {}
+          setSavedTiles(fallbackTiles.filter((t) => savedIds.includes(t.id)));
+        });
+      return;
+    }
     let savedIds: string[] = [];
     try {
       savedIds = JSON.parse(localStorage.getItem("saved") || "[]");
     } catch {}
-    if (!savedIds.length) {
-      setSavedTiles([]);
-      return;
-    }
-    const local = fallbackTiles.filter((t) => savedIds.includes(t.id));
-    setSavedTiles(local);
-    const coreApiUrl = process.env.NEXT_PUBLIC_CORE_API_URL || "/core-api";
-    Promise.all([fetchCategories(coreApiUrl), fetchDesigns(coreApiUrl, { limit: 100 })])
-      .then(([apiCategories, apiDesigns]) => {
-        const apiTiles = apiDesigns.map((d) => toTile(d, apiCategories)).filter((t) => savedIds.includes(t.id));
-        if (apiTiles.length) {
-          setSavedTiles((current) => {
-            const seen = new Set(apiTiles.map((t) => t.id));
-            return [...apiTiles, ...current.filter((t) => !seen.has(t.id))];
-          });
-        }
-      })
-      .catch(() => {});
-  }, [isOwner]);
+    setSavedTiles(fallbackTiles.filter((t) => savedIds.includes(t.id)));
+  }, [isOwner, token]);
 
   const followerCount = useMemo(
     () => (data ? data.follower_count + (following ? 1 : 0) : 0),

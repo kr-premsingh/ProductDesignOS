@@ -91,6 +91,25 @@ async fn toggle_interaction(
     Ok(Json(OkResponse { ok: true, active }))
 }
 
+/// List the designs the caller has saved, newest first.
+pub async fn list_my_saved(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+) -> Result<Json<Vec<Design>>, AppError> {
+    let designs = sqlx::query_as::<_, Design>(
+        "SELECT d.id, d.owner_id, d.category_id, d.source_type, d.title, d.asset_url, d.prompt, d.visibility, d.tags, d.created_at
+         FROM design_interactions di
+         JOIN designs d ON d.id = di.design_id
+         WHERE di.user_id = $1 AND di.type = 'save'
+         ORDER BY di.id DESC",
+    )
+    .bind(&current_user.id)
+    .fetch_all(&state.pool)
+    .await?;
+
+    Ok(Json(designs))
+}
+
 /// Toggle following another user.
 pub async fn toggle_follow(
     State(state): State<AppState>,

@@ -31,7 +31,7 @@ const socials = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-black/[0.07] bg-white text-[#1d1d1f]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:px-10 2xl:px-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" className="flex items-center gap-2 text-sm font-semibold">
