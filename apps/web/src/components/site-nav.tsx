@@ -7,7 +7,8 @@ import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
 
 const links = [
-  { label: "Explore", href: "/", icon: Compass },
+  { label: "Home", href: "/", icon: House },
+  { label: "Explore", href: "/explore", icon: Compass },
   { label: "Studio", href: "/studio", icon: WandSparkles },
   { label: "Marketplace", href: "/marketplace", icon: ShoppingBag },
   { label: "Become a provider", href: "/provider/onboard", icon: User }
@@ -15,7 +16,7 @@ const links = [
 
 const mobileLinks = [
   { label: "Home", href: "/", icon: House },
-  { label: "Inspire", href: "/inspire", icon: Compass },
+  { label: "Explore", href: "/explore", icon: Compass },
   { label: "Studio", href: "/studio", icon: WandSparkles },
   { label: "Market", href: "/marketplace", icon: ShoppingBag }
 ];

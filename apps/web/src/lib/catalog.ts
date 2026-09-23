@@ -29,6 +29,13 @@ export type Tile = {
   image: string;
 };
 
+/** Deterministic pseudo-random credit price from an id. */
+export function creditsFor(id: string) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return 49 + (hash % 150);
+}
+
 export async function fetchCategories(baseUrl: string): Promise<ApiCategory[]> {
   const res = await fetch(`${baseUrl}/categories`, { cache: "no-store" });
   if (!res.ok) throw new Error(`categories request failed: ${res.status}`);

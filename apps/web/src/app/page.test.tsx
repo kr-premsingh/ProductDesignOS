@@ -12,14 +12,15 @@ jest.mock("@/components/early-access", () => ({
 jest.mock("@/lib/catalog", () => ({
   fetchCategories: jest.fn().mockResolvedValue([]),
   fetchDesigns: jest.fn().mockResolvedValue([]),
-  toTile: jest.fn()
+  toTile: jest.fn(),
+  creditsFor: jest.fn(() => 99)
 }));
 
 describe("home page", () => {
-  it("renders the hero CTA", async () => {
-    const page = await Home();
-    render(page);
-    expect(screen.getByText("A Design OS for Individuality")).toBeInTheDocument();
-    expect(screen.getByText("Join Early Access")).toBeInTheDocument();
+  it("renders the hero CTAs", () => {
+    render(<Home />);
+    expect(screen.getByText(/See it\. Remix it\./)).toBeInTheDocument();
+    expect(screen.getByText("Shop the drop")).toBeInTheDocument();
+    expect(screen.getByText("Remix with AI")).toBeInTheDocument();
   });
 });

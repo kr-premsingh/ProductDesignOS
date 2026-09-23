@@ -78,17 +78,19 @@ export function FeedCard({ tile }: { tile: Tile }) {
   return (
     <article className="group overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(0,0,0,0.08),0_18px_38px_rgba(0,0,0,0.1)]">
       <div className="relative">
-        <img
-          src={tile.image}
-          alt=""
-          className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.025]"
-          onError={(event) => {
-            const img = event.currentTarget;
-            if (img.dataset.fallback) return;
-            img.dataset.fallback = "1";
-            img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
-          }}
-        />
+        <Link href={`/design/${encodeURIComponent(tile.id)}`} aria-label={tile.title} className="block">
+          <img
+            src={tile.image}
+            alt=""
+            className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+            onError={(event) => {
+              const img = event.currentTarget;
+              if (img.dataset.fallback) return;
+              img.dataset.fallback = "1";
+              img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
+            }}
+          />
+        </Link>
         <div className="absolute right-3 top-3 flex gap-2 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
           <button aria-label="Like" onClick={toggleLiked} className={`grid h-9 w-9 place-items-center rounded-full shadow-sm backdrop-blur ${liked ? 'bg-[#ff4da6] text-white' : 'bg-white/90 text-[#1d1d1f]'}`}>
             <Heart size={14} />
@@ -101,7 +103,7 @@ export function FeedCard({ tile }: { tile: Tile }) {
 
       <div className="p-3 text-[#1d1d1f] sm:p-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-semibold">{tile.title}</h2>
+          <h2 className="font-semibold"><Link href={`/design/${encodeURIComponent(tile.id)}`} className="transition hover:text-black/60">{tile.title}</Link></h2>
           <span className="hidden rounded-full bg-black/[0.05] px-2.5 py-1 text-[11px] font-medium text-black/55 sm:inline">{tile.category}</span>
         </div>
         <p className="mt-1.5 line-clamp-2 text-xs leading-4 text-black/55 sm:mt-2 sm:text-sm sm:leading-5">{tile.remixPrompt || "A direction ready to make your own."}</p>
