@@ -26,7 +26,7 @@ const PHOTOS: Record<string, string[]> = {
   Merch: [
     "photo-1521572163474-6864f9cf17ab", "photo-1503341504253-dff4815485f1", "photo-1576566588028-4147f3842f27",
     "photo-1618354691373-d851c5c3a990", "photo-1620799140408-edc6dcb6d633", "photo-1556821840-3a63f95609a7",
-    "photo-1529374255404-311a2a4f95c7", "photo-1562157873-818bc0726f68"
+    "photo-1523381210434-271e8be1f52b", "photo-1562157873-818bc0726f68"
   ],
   // Rooms, furniture, interior styling
   Interiors: [
@@ -42,9 +42,9 @@ const PHOTOS: Record<string, string[]> = {
   ],
   // Print: stationery, invitations, packaging, zines
   Print: [
-    "photo-1607212366386-c0c0b6c31be6", "photo-1586075010923-2dd4570fb338", "photo-1603539242326-6e4b42c1bca3",
-    "photo-1600115974614-6d3a0a69f0a0", "photo-1607434472257-d9f8e57f643d", "photo-1626785774573-4b799315345d",
-    "photo-1586953208448-b95a79798f07", "photo-1568205612837-017257d2310a"
+    "photo-1603484477859-abe6a73f9366", "photo-1586075010923-2dd4570fb338", "photo-1544716278-ca5e3f4abd8c",
+    "photo-1589998059171-988d887df646", "photo-1544441893-675973e31985", "photo-1626785774573-4b799315345d",
+    "photo-1586953208448-b95a79798f07", "photo-1512314889357-e157c22f938d"
   ],
   // Custom/modified cars & bikes
   Rides: [

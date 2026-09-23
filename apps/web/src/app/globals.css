@@ -95,7 +95,7 @@ textarea {
 }
 
 .marquee-track {
-  animation: marquee 28s linear infinite;
+  animation: marquee 60s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
