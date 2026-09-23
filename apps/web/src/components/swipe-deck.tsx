@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, Heart, RotateCcw, X } from "lucide-react";
 import { creditsFor, type Tile } from "@/lib/catalog";
+import { designPhoto } from "@/lib/artwork";
 
 type Verdict = "like" | "nope";
 
@@ -159,7 +160,7 @@ export function SwipeDeck({ tiles }: { tiles: Tile[] }) {
                           const img = event.currentTarget;
                           if (img.dataset.fallback) return;
                           img.dataset.fallback = "1";
-                          img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/800/1100`;
+                          img.src = designPhoto(tile.id, tile.category, 800, 1100);
                         }}
                       />
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent p-5 pt-16">

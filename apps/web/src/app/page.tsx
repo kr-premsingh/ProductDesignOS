@@ -6,9 +6,10 @@ import Link from "next/link";
 import { FeedCard } from "@/components/feed-card";
 import { categories as fallbackCategories, inspireTiles as fallbackTiles } from "@/lib/mock-data";
 import { creditsFor, fetchCategories, fetchDesigns, toTile, type Tile } from "@/lib/catalog";
+import { categoryPhoto, designPhoto, heroPhoto } from "@/lib/artwork";
 
 function imageFor(tile: Tile | undefined, seed: string) {
-  return tile?.image || `https://picsum.photos/seed/${encodeURIComponent(seed)}/1200/900`;
+  return tile?.image || designPhoto(seed, "poster", 1200, 900);
 }
 
 function SectionHeading({ eyebrow, title, href, cta }: { eyebrow: string; title: string; href?: string; cta?: string }) {
@@ -40,7 +41,7 @@ function TrendCard({ tile }: { tile: Tile }) {
             const img = event.currentTarget;
             if (img.dataset.fallback) return;
             img.dataset.fallback = "1";
-            img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
+            img.src = designPhoto(tile.id, tile.category);
           }}
         />
         <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[#1d1d1f]/85 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur">
@@ -219,7 +220,7 @@ function HeroSlide({
       style={width ? { width } : undefined}
     >
       <img
-        src={`https://picsum.photos/seed/${slide.seed}/1600/1000`}
+        src={heroPhoto(slide.seed)}
         alt=""
         className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[7000ms] ease-linear ${isActive ? "scale-110 opacity-70" : "scale-105 opacity-60"}`}
       />
@@ -272,9 +273,22 @@ export default function DooniqHome() {
 
   return (
     <main className="bg-[#f5f5f7] text-[#1d1d1f]">
-      {/* Snitch-style announcement strip */}
-      <div className="bg-[#1d1d1f] px-4 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-white sm:text-xs">
-        New drops every week <span className="mx-2 text-white/30">•</span> <span className="text-cyan">50 free remix credits</span> on sign up
+      {/* Announcement strip — static when it fits, slow marquee when it overflows */}
+      <div className="overflow-hidden bg-[#1d1d1f] py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white sm:text-xs">
+        <div className="marquee-track flex w-max items-center whitespace-nowrap">
+          {[0, 1].map((copy) => (
+            <span key={copy} aria-hidden={copy === 1} className="flex items-center">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <span key={i} className="flex items-center">
+                  <span className="px-6">New drops every week</span>
+                  <span className="text-white/30">•</span>
+                  <span className="px-6 text-cyan">50 free remix credits on sign up</span>
+                  <span className="text-white/30">•</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Hero — auto/manual carousel, MS Store-style peek on desktop */}
@@ -295,7 +309,7 @@ export default function DooniqHome() {
                     const img = event.currentTarget;
                     if (img.dataset.fallback) return;
                     img.dataset.fallback = "1";
-                    img.src = `https://picsum.photos/seed/dooniq-cat-${encodeURIComponent(name)}/400/400`;
+                    img.src = categoryPhoto(name);
                   }}
                 />
               </span>

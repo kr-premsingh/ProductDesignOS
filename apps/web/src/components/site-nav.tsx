@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { Compass, User, ShoppingBag, House, WandSparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Compass, LogOut, User, ShoppingBag, House, WandSparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import AuthModal from "@/components/auth-modal";
 import { Logomark } from "@/components/logo";
@@ -28,6 +28,15 @@ export function SiteNav() {
 function SiteNavInner() {
   const { user, logout } = useAuth();
   const [openAuth, setOpenAuth] = useState(false);
+  const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
+
+  // Close the account popover when navigating away on mobile.
+  useEffect(() => {
+    if (!mobileAccountOpen) return;
+    const close = () => setMobileAccountOpen(false);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, [mobileAccountOpen]);
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-black/[0.07] bg-[rgba(250,250,252,0.86)] shadow-[0_1px_0_rgba(0,0,0,0.03)] backdrop-blur-xl">
@@ -78,10 +87,37 @@ function SiteNavInner() {
           </Link>
         ))}
         {user ? (
-          <Link href={`/profile/${user.username}`} aria-label="Account" className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-black/[0.05] hover:text-black">
-            <User size={18} strokeWidth={1.8} />
-            <span className="mt-1">Account</span>
-          </Link>
+          <div className="relative min-w-0 flex-1">
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                setMobileAccountOpen((open) => !open);
+              }}
+              aria-label="Account"
+              aria-expanded={mobileAccountOpen}
+              className="flex w-full flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-black/[0.05] hover:text-black"
+            >
+              <User size={18} strokeWidth={1.8} />
+              <span className="mt-1">Account</span>
+            </button>
+            {mobileAccountOpen ? (
+              <div className="absolute bottom-[4.5rem] left-1/2 z-50 w-44 -translate-x-1/2 overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-1.5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+                <Link
+                  href={`/profile/${user.username}`}
+                  onClick={() => setMobileAccountOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#1d1d1f] transition hover:bg-black/[0.05]"
+                >
+                  <User size={15} /> Profile
+                </Link>
+                <button
+                  onClick={() => { setMobileAccountOpen(false); logout(); }}
+                  className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-magenta transition hover:bg-magenta/10"
+                >
+                  <LogOut size={15} /> Sign out
+                </button>
+              </div>
+            ) : null}
+          </div>
         ) : (
           <button onClick={() => setOpenAuth(true)} aria-label="Account" className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-2xl px-1 py-1 text-[10px] font-medium leading-none transition hover:bg-black/[0.05] hover:text-black">
             <User size={18} strokeWidth={1.8} />

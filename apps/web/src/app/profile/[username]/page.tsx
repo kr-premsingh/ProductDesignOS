@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { fetchCategories, fetchDesigns, toTile, type Tile } from "@/lib/catalog";
+import { designPhoto } from "@/lib/artwork";
 import { inspireTiles as fallbackTiles } from "@/lib/mock-data";
 import { FeedCard } from "@/components/feed-card";
 
@@ -291,7 +292,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                       const img = event.currentTarget;
                       if (img.dataset.fallback) return;
                       img.dataset.fallback = "1";
-                      img.src = `https://picsum.photos/seed/${encodeURIComponent(design.id)}/800/1000`;
+                      img.src = designPhoto(design.id, "poster", 800, 1000);
                     }}
                   />
                   <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8 text-sm font-bold text-white opacity-0 transition group-hover:opacity-100">

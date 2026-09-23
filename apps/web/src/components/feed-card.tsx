@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Wand2, Heart, Bookmark, BriefcaseBusiness } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
+import { designPhoto } from '@/lib/artwork';
 
 async function postAction(path: string, token?: string) {
   try {
@@ -87,7 +88,7 @@ export function FeedCard({ tile }: { tile: Tile }) {
               const img = event.currentTarget;
               if (img.dataset.fallback) return;
               img.dataset.fallback = "1";
-              img.src = `https://picsum.photos/seed/${encodeURIComponent(tile.id)}/900/1200`;
+              img.src = designPhoto(tile.id, tile.category);
             }}
           />
         </Link>

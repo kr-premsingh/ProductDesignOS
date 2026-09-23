@@ -21,10 +21,11 @@ import {
 import { FeedCard } from "@/components/feed-card";
 import { categories as fallbackCategories, inspireTiles as fallbackTiles } from "@/lib/mock-data";
 import { creditsFor, fetchCategories, fetchDesigns, toTile, type Tile } from "@/lib/catalog";
+import { photoForId } from "@/lib/artwork";
 import { useAuth } from "@/lib/auth";
 
 function fallbackImage(seed: string, w = 1200, h = 1500) {
-  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`;
+  return photoForId(seed, w, h);
 }
 
 export default function DesignPage() {
