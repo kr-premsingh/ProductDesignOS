@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
+import { SiteFooter } from "@/components/site-footer";
 import { CompanyNav } from "@/components/company-nav";
 import { AuthProvider } from "@/lib/auth";
 
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`min-h-screen ${isCompanySite ? "company-shell bg-[var(--surface)] text-white" : "dooniq-shell bg-[#f5f5f7] text-[#1d1d1f]"}`}>
-        {isCompanySite ? <><CompanyNav />{children}</> : <AuthProvider><SiteNav /><main className="min-h-screen pb-28">{children}</main></AuthProvider>}
+        {isCompanySite ? <><CompanyNav />{children}</> : <AuthProvider><SiteNav /><main className="min-h-screen pb-28">{children}</main><SiteFooter /></AuthProvider>}
       </body>
     </html>
   );
